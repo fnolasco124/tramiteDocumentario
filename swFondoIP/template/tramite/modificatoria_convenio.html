@@ -1,0 +1,215 @@
+{% extends 'base3.html' %}
+{% block js%}
+<script src="/media/js/fipValidacion.js"></script>
+<script type="text/javascript">
+  $(document).on("ready", function(){
+    
+    $("#agregar_modificatoria").click(cargar_modal);
+    
+    function cargar_modal(){
+      if ($(".error").is(":hidden")){
+        $("#cargador").show();
+      }
+    };
+     
+    $(".eliminar_registro").on("click", eliminar_detalle);
+    function eliminar_detalle(){
+        codigo = $(this).attr("codigo");
+        modelo = $(this).attr("modelo");
+        r = confirm("Desea elminar el registro");
+        if(r === true){
+            $.ajax({
+                  data: {'codigo': codigo, 'modelo':modelo},
+                  url: '/ajax/eliminar_registro/',
+                  type: 'get',
+                  success: function(data){
+                      if (data.mensaje == "true"){
+                          //alert("Archivo adjunto eliminado.");
+                      $("#tr"+codigo).fadeOut("slow", function(){
+                          $(this).remove();
+                      });
+                    }
+                  },
+                  error: function(data){
+                      alert("Error en la comunicacion con el servidor. " + data.mensaje);
+                  }
+            });
+        }
+    };
+    
+   
+  });
+</script>
+{% endblock %}
+{% block contenido %}
+    
+    <div class="col-lg-2">
+        
+    </div>
+    
+    <div class="container col-lg-8">
+        <div class="panel panel-default">
+            <div class="panel-heading" style="background-color:#383821; color:#fff;">
+                <center><b>Documentos adjuntos</b></center>
+            </div>
+                    
+            <div class="panel-body">
+        
+        
+        <form method= "POST" action="" class="form-horizontal" role="form" name="frmModificatoria" id ="frmModificatoria" enctype="multipart/form-data">
+                {%csrf_token%}
+                <div class="form-group">
+                    <label class="col-lg-2 control-label">Nº de Convenio</label>
+                    <div class="col-lg-4">
+                      <input type="text" class="hide form-control" id="codigo_proyecto"  name="codigo_proyecto" value="{{instance.IdMProy}}">
+                      <label class="form-control" style="color:#4A6D81"> {{instance.IdCFMProy}}</label>
+                    </div>  
+                </div>
+      
+                <div class="form-group">
+                    <label class="col-lg-2 control-label">Nombre del Proyecto</label>
+                    <div class="col-lg-10">
+                      <textarea class="form-control" disabled = "disabled" style="color:#4A6D81">{{instance.NomMProy|upper}}</textarea>
+                    </div>  
+                </div>
+
+                 <div class="form-group">
+                    <label class="col-lg-2 control-label">Unidad Ejecutora</label>
+                    <div class="col-lg-10">
+                      <label class="form-control" style="color:#4A6D81">{{instance.IdMCli.NomMCli|upper}}</label>
+                    </div>
+                </div>
+
+                
+
+                <div class="form-group">
+                    <label class="col-lg-2 control-label">Tipo Documento</label>
+                    <div class="col-lg-4">
+                        <select type="select" class="form-control" id="IdTipDocDProy"  name="IdTipDocDProy" placeholder="">
+                              <option value="">[Seleccione]</option>
+                              {% for item in tipo_adendas%}
+                              <option value="{{item.id}}">{{item.NomDTab}}</option>
+                              {% endfor %}
+                              
+                      </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="col-lg-2 control-label">Descripción</label>
+                    <div class="col-lg-10">
+                        {{form.DescDProy}}
+                        {{form.DescDProy.errors}}
+                                              
+                    </div>  
+                </div>
+
+                <div class="form-group">
+                    <label class="col-lg-2 control-label">Fecha Firma</label>
+                    <div class="col-lg-2">
+                        {{form.FecFirmaDProy}}
+                        {{form.FecFirmaDProy.erros}}
+                    </div>
+                    <label class="col-lg-2 control-label">Fecha Inicio</label>
+                    <div class="col-lg-2">
+                        {{form.FecIniDProy}}
+                        {{form.FecIniDProy.errors}}
+                    </div>
+                    <label class="col-lg-2 control-label">Fecha Fin</label>
+                    <div class="col-lg-2">
+                        {{form.FecFinDProy}}
+                        {{form.FecFinDProy.errors}}
+                    </div>
+                </div>
+
+                
+
+                <div class="form-group">
+                    <label class="col-lg-1 control-label text-left">Inversión</label>
+                    <label class="col-lg-1 control-label text-right">FIP</label>
+                    <div class="col-lg-2">
+                        {{form.MontAportFIPDProy}}
+                        {{form.MontAportFIPDProy.errors}}
+                    </div>  
+                    <label class="col-lg-2 control-label">UE</label>
+                    <div class="col-lg-2">
+                        {{form.MontAportCliDProy}}
+                        {{form.MontAportCliDProy.errors}}
+                    </div>
+                    <label class="col-lg-2 control-label">Inversión Asociados</label>
+                    <div class="col-lg-2">
+                        {{form.MontAportOtrDProy}}
+                        {{form.MontAportOtrDProy.errors}}                        
+                    </div>
+                </div>
+                  
+                <div class="form-group">
+                    
+                    <label class="col-lg-2 control-label">PDF Modificatoria</label>
+                    <div class="col-lg-4">
+                        {{form.RutaPDFDProy}}
+                        
+                    </div>                    
+                </div>
+                  
+                  <div class="form-group">
+                    <div class="col-lg-offset-5 col-lg-12">
+                      
+                      <button type="submit" class="btn btn-success" id="agregar_modificatoria" name="agregar_modificatoria"><span class="glyphicon glyphicon-plus"></span> Agregar</button>
+                      <a href="{% url "list-proyecto" %}" class="btn btn-danger" data-dismiss="modal" id="btnCancelar" name="btnCancelar" style="color:#fff;"><span class="glyphicon glyphicon-ok"></span> Finalizar</a>
+                     
+                    </div>
+                </div>
+          </form>
+            <br>
+                <div class="form-group">
+              <div class="">
+                    <table class="table table-condensed" id="tabla" name="tabla">
+                        <thead style="background-color: #222; color: #FAFAFA">
+                            <tr>
+                                <th></th>
+                                <th><center>Descripcion</center></th>
+                                <th><center>Fecha Firma</center></th>
+                                <th><center>Fecha Inicio</center></th>
+                                <th><center>Fecha Fin</center></th>
+                                <th><center>FIP</center></th>
+                                <th><center>UE</center></th>
+                                <th><center>Asoc</center></th>
+                                <th><center>PDF</center></th>
+                                                    
+                                        
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for item in adendas %}
+                                <tr id="tr{{item.IdDProy}}" class="text-info">
+                                    <td><input class="select" type="checkbox" name = "chk[]" value="{{item.IdDProy}}"/></td>
+                                    <td ><center>{{ item.DescDProy}}</center></td>
+                                    <td >{{item.FecFirmaDProy|date:'Y-M-d'}}</td>
+                                    <td >{{item.FecIniDProy|date:'Y-M-d'}}</td>
+                                    <td >{{item.FecFinDProy|date:'Y-M-d'}}</td>
+                                    <td class = "text-right">S/. {{item.MontAportFIPDProy}}</td>
+                                    <td class = "text-right">S/. {{item.MontAportCliDProy}}</td>
+                                    <td class = "text-right">S/. {{item.MontAportOtrDProy}}</td>
+                                    <td ><a target="_blank" href="{{MEDIA_URL}}{{item.RutaPDFDProy}}">{{item.RutaPDFDProy|cut:'adendasPDF/'}}</a></td>
+                                    <td>
+                                        <a href= "#" class = "eliminar_registro" codigo="{{item.IdDProy}}" modelo = "3"><span class = "text-danger glyphicon glyphicon-trash"></span></a>
+                                    </td>
+                                                                                                                             
+                                   </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+
+
+                                                         
+              </div>
+        </div>
+        </div>
+  </div>
+    </div>
+
+    <div class="col-lg-2">
+        
+    </div>
+{% endblock %}

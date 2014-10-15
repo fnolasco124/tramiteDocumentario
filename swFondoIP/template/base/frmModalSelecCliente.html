@@ -1,0 +1,39 @@
+<div class="modal fade" id="seleccionarUnidadEjecutora" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true" id = 'false'>&times;</button>
+        <h4 class="modal-title" id="myModalLabel">Seleccione Unidad Ejecutora</h4>
+      </div>
+      <div class="modal-body">
+        <div class="form-group col-lg-8 pull-right">
+          <input type="text" class="form-control  pull-rigth" id="texto_Cliente" placeholder = "Escriba el nombre de la Unidad Ejecutora">
+        </div>
+         <br>
+	<div style="height:400px; width:1150px; overflow:scroll;">
+            <table class="table table-bordered" id="tabla" name="tabla" width="1500px">
+              <thead style="background-color: #222; color: #FAFAFA">
+                <tr> 
+                    <th ><center>Código</center></th>
+                    <th ><center>Nombre</center></th>
+                    <th ><center>Referencia</center></th>                  
+                </tr>
+              </thead>
+              <tbody>    
+              {% for obj in  listaUE %}
+                <tr id="tr{{obj.idMCli}}">
+                  <td>{{obj.IdMCli}}</td>
+                  <td class="nombre"><a href="#" id="cliente[]" class="cliente" nomCli="{{obj.NomMCli}}" codCli="{{obj.IdMCli}}" >{{obj.NomMCli|truncatechars:200}}</a></td>            
+                  <td>{{obj.RefMCli|default:'Sin referencia'}}</td>
+                </tr>
+              {% endfor %}
+		</tbody>
+            </table>
+        </div>
+      </div>
+      <div class="modal-footer">
+                
+      </div>
+    </div>
+  </div>
+</div>

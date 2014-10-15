@@ -1,0 +1,150 @@
+
+{% extends "base.html"%}
+{% block js%}
+ <!--<script src="/media/js/vUsuario.js"></script>-->
+{% endblock %}
+{% block contenido %}
+
+<div class="col-lg-3"></div>
+<div class="container col-lg-6">
+	<div class="panel panel-default">
+		<div class="panel-heading">
+			<center><b>Derivación de Usuarios</b></center>
+		</div>
+
+		<div class="panel-body">
+			<div border="100">
+				<form  method="POST" class="form-horizontal" role="form" id = "frmUser" name = "frmUser">
+					{% csrf_token %}
+					<div class="form-group">
+						<label class="col-lg-2 control-label">Usuario</label>
+						<div class="col-lg-6">
+							<select id="idMPer" name="idMPer" class="form-control">
+								<option value="">Seleccione...</option>
+								{% if lista %}
+									{% for obj in lista %}
+										<option value="{{obj.pk}}">{{obj.apePMPer}} {{obj.apeMMPer}} {{obj.nomMPer}}</option>
+									{% endfor %}
+								{% endif %}
+							</select>
+						</div>
+					</div>
+					
+					
+					<div class="form-group">
+						<label class="col-lg-2 control-label"></label>
+						<div class="col-lg-8">
+						<table class="col-lg-10">
+							<tbody>
+								<tr>
+								<td>
+									<div class="col-lg-4 form-group">
+										<div class="col-lg-4">
+											
+											<div class="col-lg-5">
+												<table class="table table-bordered" id="tabla" name="tabla">
+													<thead>
+														<tr class="success">
+															<th>
+																<input type="checkbox"></th>
+																<th ><center>Usuarios</center></th>
+																
+														</tr>
+													</thead>
+															
+													{% for obj in  lista %}
+													<tbody>
+														<tr id="tr{{obj.pk}}">
+															<td><input type="checkbox"></td>
+															<td>{{obj.nomMPer}}</td>
+														</tr>
+
+													</tbody>
+													{% endfor %}
+
+												</table>
+											</div>
+										</div>
+									</div>
+
+								
+								</td>
+								<td>
+									<div class="">
+										<div class="col-lg-1">
+											
+											<a type="" class="btn btn-default"><span class="glyphicon glyphicon-forward"></span></a>
+						     				<a type="" class="btn btn-default"><span class="glyphicon glyphicon-chevron-right"></span></a>
+						     				<a type="" class="btn btn-default"><span class="glyphicon glyphicon-chevron-left"></span></a>
+						     				<a type="" class="btn btn-default"><span class="glyphicon glyphicon-backward"></span></a>
+										</div>
+									</div></center>
+								</td>
+								<td>
+									
+									<div class="col-lg-4 form-group">
+										<div class="col-lg-4">
+											<table class="table table-bordered" id="tabla" name="tabla">
+												<thead>
+													<tr class="success">
+														<th>
+															<input type="checkbox"></th>
+															<th ><center>Usuario</center></th>
+															
+													</tr>
+												</thead>
+														
+												{% for obj in  lista %}
+												<tbody>
+													<tr id="tr{{obj.pk}}">
+														<td><input type="checkbox"></td>
+														<td>{{obj.nomMPer}}</td>
+													</tr>
+
+												</tbody>
+												{% endfor %}
+
+											</table>
+										</div>
+									</div>
+
+
+								</td>
+								</tr>
+							</tbody>
+						</table>
+						</div>
+						
+
+						
+					</div>
+
+					
+					<div class="form-group">
+			            <div class="col-lg-offset-4 col-lg-10">
+			              	
+			        	    <button type="submit" class="btn btn-success"><span class="glyphicon glyphicon-ok"></span> Guardar</button>
+				     		<button type="reset" class="btn btn-danger"><span class="glyphicon glyphicon-remove"></span> Cancelar</button>	
+			              	
+			            </div>
+			            <br><br>
+							{% if error %}
+							<p class="bg-danger">{{error}}</p>
+							{% endif %}
+			        </div>
+
+				</form>
+			</div>
+			
+		</div>
+		<div class="panel-footer">
+			<i><small>Fondo Italo Peruano</small></i>
+			
+				<i><small>{{error}}</small></i>
+			
+		</div>
+	</div>	
+</div>
+
+
+{% endblock %}

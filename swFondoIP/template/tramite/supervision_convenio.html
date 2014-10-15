@@ -1,0 +1,37 @@
+{% extends 'base3.html' %}
+{% block js%}
+{% endblock%}
+{% block contenido %}	
+<div class="col-lg-12">
+	<h3><p class="text-info text-center text-large">Supervisión Financiera</p></h3>
+	<br>
+	<br>
+	<p class="text-success" style="font-size:16px;">Tiene asignado {{lista|length}} proyecto(s) para ser supervisados.</p>			
+		<table class="table table-condensed" id="tabla" name="tabla" border="0">
+			<thead style="background-color: #222; color: #FAFAFA">
+				<tr>
+					<th class="text-center" style="width:10%;">Código</center></th>
+					<th class="text-center" style="width:60%;">Nombre del Proyecto</center></th>
+					<th class="text-center" style="width:300%;">Und. Ejecutora</center></th>
+				</tr>
+			</thead>
+			<tbody>
+				{% if lista %}
+					{% for item in lista %}
+						<tr class="text-info">
+							<td>{{item.IdMProy}}</td>
+							<td title="{{item.NomMProy}}">{{item.NomMProy|truncatechars:110}}</td>
+							<td titel="{{item.IdMCli.NomMCli}}">{{item.IdMCli.NomMCli|truncatechars:55}}</td>
+							<td ><a href="/supervision/presupuesto/{{item.IdMProy}}/" class="ver_presupuesto " codigo="{{item.IdMProy}}"><span class="text-warning glyphicon glyphicon-usd" title="Ver Presupuesto"></span></a></td>
+							<td ><a href="#" class="ver_indicadores" codigo="{{obj.IdMCli}}"><span class="text-danger glyphicon glyphicon-signal" title="Ver Indicadores"></span></a></td>
+						</tr>
+					{% endfor %}
+					
+				{% endif %}
+
+			</tbody>
+		</table>
+</div>
+
+	
+{% endblock %}

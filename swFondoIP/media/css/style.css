@@ -1,0 +1,72 @@
+.padd{
+	padding: 10px;
+}
+
+.bor{
+	background: url("../images/bor.png") repeat-x;
+	height: 3px;
+}
+/* Contact slider box */
+
+.cslider{
+	display: none;
+	background: #0a0a0a;
+	border-bottom: 1px solid #000;
+}
+
+.cslider hr{
+	border-top: 1px solid #000;
+	border-bottom: 1px solid #181818;
+}
+
+.cslider-btn{
+	width: 70px;
+	height: 15px;
+	background: #c20d23 url("../images/red.png") repeat; 
+	line-height: 15px;
+	text-align: center;
+	cursor: pointer;
+	color: #fff;
+	padding-top: 1px;
+	padding-bottom: 2px;
+	margin: 0px auto;
+}
+
+.cslider img{
+	width: 150px;
+}
+
+/* Slide Box*/
+
+.slide-box{
+	width: 250px;
+	z-index: 400;
+	position: fixed;
+	top: 35%;
+	/* background: #ccc111;*/
+	background: url("../images/b-sidebar-back.png") repeat; 
+	border: 1px solid #000;
+	right: -252px;
+	color: #fff;
+}
+
+.slide-box .slide-box-button{
+	background: #c20d23 url("../images/red.png") repeat;
+	border-right: 0px;
+	text-align: center;
+	line-height: 40px;
+	width: 29px;
+	height: 40px;
+	display: block;
+	position: absolute;
+	z-index: 400;
+	left: -30px;
+	top: 35%;
+	cursor: pointer;
+}
+
+.slide-box i{
+	margin-right: 0px;
+}
+
+

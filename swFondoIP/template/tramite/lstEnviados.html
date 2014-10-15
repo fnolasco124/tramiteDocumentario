@@ -1,0 +1,101 @@
+{% extends 'base.html' %}
+{% block js%}
+<script src="/media/js/otro.js"></script>
+<script>
+	
+</script>
+{% endblock%}
+{% block contenido %}	
+	<div class="col-lg-2">
+		<div class="col-lg-12">
+			<img src="{{MEDIA_URL}}images/imgFIP/log.jpg" alt="" class="img-rounded img-responsive">
+			<div class="list-group">
+			    <a href="#" class="list-group-item active text-center" style="font-size:17px">Tramite Documentario</a>
+			  	<a href="{% url "vista_protocolo"%}" class="list-group-item">Nuevo</a>
+			  	<a href="{% url "vista_bandeja" %}" class="list-group-item">Bandeja de Entrada</a>
+			  	<a href="{% url "vista_protocolosEnviados"%}" class="list-group-item"  style= "color:#424242; font-weight:bold">Enviados</a>
+			  	<a href="{% url "vista_protocolosObservados"%}" class="list-group-item">Observados</a>
+			  	<a href="{% url "vista_localizarProtocolo"%}" class="list-group-item">Localizar Protocolo</a>
+			  	<a href="{% url "vista_buscarOCR"%}" class="list-group-item">Buscar en OCR</a>
+			</div>
+			
+									
+		</div>
+
+	</div>
+	
+	<div class="col-lg-8">
+		<p><h3><center>{{nomTabla}}</center></h3></p>
+		<br>
+		<b>Protocolos Enviados</b> : {{ lista|length }}
+		<br>
+		<!--<a href="#" mi="esto es el valor de mio" id="mio" name="mio">esto es mio</a>-->
+		<!-- BOTON PARA BUSCAR POR CAMPO -->
+		<div class="form-group pull-right">
+			<div class="col-lg-6 pull-right">
+			    <div class="input-group col-lg-10 ">
+			      <input type="text" class="form-control  pull-rigth" id="texto_busqueda">
+			      <div class="input-group-btn">
+			        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-search"></span></button>
+			        
+			      </div><!-- /btn-group -->
+			    </div><!-- /input-group -->
+			  </div><!-- /.col-lg-6 -->
+			
+
+		</div>
+		<br>
+		
+		<br><br>
+		<form method= "POST" action="." class="form-horizontal" role="form" name="frmBandeja" id ="frmBandeja">
+			{% csrf_token %}
+			
+		</form>
+
+		<br>
+		<br>
+		<table class="table table-condensed" id="tabla" name="tabla">
+			<thead>
+				<tr class="success">
+					<th><input type="checkbox" name="chkBandeja" id="chkBandeja"></th>
+					{% for item in listFields %}
+						<th ><center>{{ item }}</center></th>
+					{% endfor %}
+					
+				</tr>
+			</thead>
+					
+			{% for obj in  lista %}
+			<tbody>
+				<tr id="tr{{obj.pk}}" id="esto" name="esto">
+					<td><input class="select" type="checkbox" name = "chk[]" id ="chk" value="{{obj.pk}}"/></td>
+					<!--<td ><center>{{ obj.pk }}</center></td>-->
+					<td class="protocolo"><a href="#" id="" class="btnDetalle"  codigo="{{obj.idMProt}}">{{obj.idMProt}}</a></td>
+					<td class="nombre">{{obj.proyBProt}}</td>
+					<td class="cliente">{{obj.cliBProt}}</td>
+					<td class="enviadoPor">{{obj.nomMUsuEnv}}</td>
+					<td>{{obj.fecEnv}}</td>
+					
+					<td class="referencia">{{obj.idBandejaRef}}</td>
+
+					
+					
+				</tr>
+
+			</tbody>
+			{% endfor %}
+
+		</table>
+		
+	</div>
+
+	<div class="col-lg-2">
+		<div>
+			<p style= "color:#FF0000; font-weight:bold">Documentos adjuntos:</p>
+			<!--<a href="{{pdf.rutaPdfDProt.url}}" target="_blank">Hasme tuyo</a>-->
+		</div>
+		<div class="list-group" target="_blank" id ="lstDocs" name ="lstDocs">
+			
+		</div>
+	</div>
+{% endblock %}

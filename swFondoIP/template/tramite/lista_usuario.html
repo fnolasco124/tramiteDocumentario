@@ -1,0 +1,157 @@
+{% extends 'base3.html' %}
+{% block js%}
+	<!--<script src="/media/js/fip.js"></script>-->
+	<script src="/media/js/otro.js"></script>
+	<script src="/media/js/fipValidacion.js"></script>
+	<script type="text/javascript">
+	  $(document).on("ready", function(){
+	    
+	    $(".eliminar_registro").on("click", eliminar_detalle);
+	    $(".modificar_password").on("click", modificar_password);
+	    function modificar_password(){
+	    	pwd = prompt("Ingrese el password");
+	    	pwdConfirm = prompt("Confirme el password");
+	    	codigo = $(this).attr("codigo");
+	    	
+	    	if(pwd === pwdConfirm){
+	    		$.ajax({
+	    			data: {'password': pwd, 'codigo': codigo},
+	    			url: '/ajax/modificar_password/',
+	    			type: 'get',
+	    			success: function(data){
+	    				if (data.estado === true){
+	    					alert("Password actualizado");
+	    				}else{
+	    					alert(data.estado);
+	    				}
+	    			},
+	    			error: function(data){
+	    				alert("Sucedió un error en la comunicación con el servidor");
+	    			}
+	    		});
+	    	}
+	    };
+	    function eliminar_detalle(){
+	        codigo = $(this).attr("codigo");
+	        modelo = $(this).attr("modelo");
+	        r = confirm("Desea eliminar el registro");
+	        if(r === true){
+	            $.ajax({
+	                  data: {'codigo': codigo, 'modelo':modelo},
+	                  url: '/ajax/eliminar_registro/',
+	                  type: 'get',
+	                  success: function(data){
+	                      if (data.mensaje === true){
+	                          //alert("Archivo adjunto eliminado.");
+	                      $("#tr"+codigo).fadeOut("slow", function(){
+	                          $(this).remove();
+	                      });
+	                    }
+	                  },
+	                  error: function(data){
+	                      alert("Error en la comunicacion con el servidor. " + data.mensaje);
+	                  }
+	            });
+	        }
+	    };
+	    
+	   
+	  });
+</script>
+{% endblock %}
+{% block contenido %}
+
+{% include 'tramite/nuevo_usuario.html'%}
+
+<div class="col-lg-12">
+	<div class="col-lg-12">
+		<div class = "table-responsive col-lg-12">
+		<h3><p class="text-info text-center text-large">Registro de Usuarios</p></h3>
+		<br>
+		<b>Cantidad de registros</b> : {{ lista|length }}
+		<br><br>
+		<!--<a href="" class="btn btn-warning"><span class="glyphicon glyphicon-search"></span> Filtrar</a>-->
+		<!-- BOTON PARA BUSCAR POR CAMPO -->
+		<div class="form-group">
+			<a href="#nuevo_usuario_modal" id="nuevo_usuario" class="text-success" data-toggle="modal" role="button"><span class="text-success glyphicon glyphicon-plus"></span> Agregar Usuario</a>
+			<div class="col-lg-6 pull-right">
+			    <div class="input-group">
+			      <input type="text" class="form-control  pull-rigth" id="texto_busqueda">
+			      <div class="input-group-btn">
+			        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-search"></span></button>
+			        <ul class="dropdown-menu pull-right">
+			          <li><a href="#" id="buscarPorNombre">Usuario</a></li>
+			          <li><a href="#" id="mostrarTodos">Mostrar todos</a></li>
+			          
+			        </ul>
+			      </div><!-- /btn-group -->
+			    </div><!-- /input-group -->
+			  </div><!-- /.col-lg-6 -->
+			
+
+		</div>
+		<!-- FIN DE BOTON PARA BUSCAR POR CAMPO -->
+		<br>
+		<table class="table table-condensed" id="tabla" name="tabla">
+			<thead style="background-color: #222; color: #FAFAFA;">
+				<tr>
+					<th class="text-center" style="width:10%;">Código</th>
+					<th class="text-center" style="width:25%;">Apellidos</th>
+					<th class="text-center" style="width:25%;">Nombres</th>
+					<th class="text-center" style="width:20%;">Usuario</th>
+					<th class="text-center" style="width:10%;">Nivel</th>
+					<th class="text-center" style="width:10%;">Ingreso</th>
+					
+				</tr>
+			</thead>
+			<tbody style="background-color: #fff; color:#254; border:0;" id="lista_usuarios">		
+			{% for obj in  lista %}
+				<tr id="tr{{obj.id}}" class="text-info">
+					<td class="text-center">{{ obj.pk }}</td>
+					<td class="nombre">{{obj.last_name}}</center></td>
+					<td >{{obj.first_name}}</td>
+					<td >{{obj.username}}</td>
+					<td >{{obj.tipoUsuario}}</td>
+					<td >{{obj.fecIngreso|date:"d-m-Y"}}</td>
+					<td ><a href="#" class="editar_registro" title = "Editar" codigo="{{obj.pk}}" modelo="0"><span class="text-warning glyphicon glyphicon-pencil"></span></a></td>
+					<td ><a href="#" class="eliminar_registro" title = "Eliminar" codigo="{{obj.pk}}" modelo="0"><span class="text-danger glyphicon glyphicon-trash"></span></a></td>
+					<td ><a href="#" class="modificar_password" title = "Cambiar password" codigo="{{obj.pk}}" modelo="0"><span class="text-danger glyphicon glyphicon-asterisk"></span></a></td>
+				</tr>
+			{% endfor %}
+			</tbody>
+		</table>
+		<div class="hide alert alert-warning" id="div_mensaje">
+			  <button type="button" class="close" data-dismiss="alert" aria-hidden="true" id="false">&times;</button>
+			  <p id="mensaje"></p>
+		</div>
+		</div>
+	</div>
+	<div class = "pull-right" style = "padding-top:0%;">
+		{% if  page_obj %}
+		<div class="pagination" style = "padding-top:0%;">
+			<ul class="pagination">
+				<li><a href="?page=1"> << </a></li>
+			{% if page_obj.has_previous %}
+				<li><a href="?page={{page_obj.previous_page_number}}"> Anterior </a></li>
+			{% else %}
+				<li><a href="#"> Anterior </a></li>
+			{% endif %}
+			{% if page_obj.has_next %}
+				<li><a href="?page={{page_obj.next_page_number}}"> Siguiente </a></li>
+			{% else %}
+				<li><a href="#"> Siguiente </a></li>
+			{% endif %}
+				<li><a href="?page={{page_obj.paginator.num_pages}}"> >> </a></li>
+
+			</ul>
+			<h4>Pagina {{page_obj.number }} de {{page_obj.paginator.num_pages}}</h4>
+		
+		</div>
+		{% endif %}
+	</div>
+</div>	
+	
+
+
+
+{% endblock %}

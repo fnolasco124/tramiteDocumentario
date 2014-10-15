@@ -1,0 +1,150 @@
+{% extends 'base3.html' %}
+{% block js%}
+	<script src="/media/js/otro.js"></script>
+{% endblock %}
+{% block contenido %}
+
+<div class="col-lg-12" id="cuerpo">
+	<div class="col-lg-12">
+			{% if errores %}
+				<a href="javascript:window.history.back();" class="btn btn-danger" sytle="font-size:16px;"><p><span class="glyphicon glyphicon-arrow-left"></span> Regresar.. </p></a><br><br>
+				<p style="text-danger">Se han encontrado los siguentes errores: </p><br>
+			   	{% for e in errores %}
+			   	<ul>{{e}}</ul>
+			   	{% endfor %}
+			{% endif %}
+
+		   	{% if mensaje %}
+		   		<a href="/supervision/presupuesto/" class="btn btn-danger" style="font-size:16px;"><strong><span class="glyphicon glyphicon-arrow-left"></span> Regresar</strong></a><br><br>
+		   		<div class="alert alert-warning" id="divMensaje">
+			  		
+			  		<p id="mensaje_usuario"><strong>{{mensaje}}</strong></p>
+				
+				<br><br>
+				<form class="form-horizontal"  enctype="multipart/form-data" action="" method="post" id="form_carga">
+                   	{% csrf_token %}
+                    <div class="form-group">
+                        <div class="col-lg-8">
+                        	<input type="text" class="hide form-control" id="proyecto" name="proyecto" value="{{proyecto}}">
+							{{form.doc_temp.label_tag}}
+                            {{form.doc_temp}}
+                        </div>
+                    </div>
+					<br>
+					<div>
+						<button type="submit" class = "btn btn-danger" id="btnCargarPresupuesto">
+							<span class="glyphicon glyphicon-ok"></span>
+							 Enviar
+						</button>
+					</div>
+                </form>
+				</div>
+			{% endif %}
+				
+			{% if datos %}
+				<br>
+				<div class="alert alert-warning" id="divMensaje">
+					<a href="/supervision/presupuesto/" class="btn btn-danger text-danger text-left" style="font-size:16px;" cod="0"><strong><span class="glyphicon glyphicon-arrow-left"></span> REGRESAR </strong></a>
+					<p class="text-warning text-center" style="font-size:18px;"><strong>PRESUPUESTO FINANCIERO </strong></p><br>
+					<table>
+						<tbody>
+							<tr>
+					    		<td><p class="text-warning"><strong>Número de Convenio </strong></p></td>
+					    		<td><p class="text-info"><strong>: {{convenio|upper}} </p> </td>
+					    	</tr>
+							<tr>
+					    		<td><p class="text-warning"><strong>Nombre del Proyecto </strong></p></td>
+					    		<td><p class="text-info"><strong>: {{proyecto|upper}} </p> </td>
+					    	</tr>
+					    	<tr>
+					    		<td><p class="text-warning"><strong>Unidad Ejecutora </strong></p> </td></p>
+					    		<td><p class="text-info"><strong>: {{cliente|upper}} </p> </td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+				<br>
+				<div id="datosPress" class = "col-lg-12" style="height:550px; overflow:scroll;">
+					<table class="table table-condensed" id="tabla" name="tabla" border="1">
+						<thead style="background-color: #222; color: #FAFAFA; font-size:12px;">
+							<tr>
+								<th rowspan="2" style="width:10px;"><center>Nro Part.</center></th>
+								<th colspan="2" rowspan="2" style="width:60px;"><center>Descripcion</center></th>
+								<th rowspan="2" style="width:50px;"><center>Un. Med</center></th>
+								<th rowspan="2" style="width:50px;"><center>Cant</center></th>
+								<th rowspan="2" style="width:80px;"><center>Costo Unitario</center></th>
+								<th rowspan="2" style="width:80px;"><center>Monto Total</center></th>
+								<th colspan="3" ><center>Fuente de Financiamiento</center></th>
+								{% for n in rango %}
+								<th colspan="2" class="text-center" style="width:160px;"> MES {{n}}</th>
+								{% endfor%}
+								<th colspan="2" rowspan="2" style="width:50px;"><center>Monto Total</center></th>
+							</tr>
+							<tr>
+								<th class="text-center" style="width:80px;"> FIP </th>
+								<th class="text-center" style="width:80px;"> UE </th>
+								<th class="text-center" style="width:80px;"> Otros </th>
+								{% for n in rango %}
+								<th class="text-center" style="width:80px;">FIP</th>
+								<th class="text-center" style="width:80px;">UE+Otrs</th>		
+								{% endfor %}
+							</tr>
+						</thead>
+						<tbody style="font-size:10px;">
+							{% for col in datos %}
+							<tr id="tr{{obj.id}}" class="text-info">
+								<td class="text-right">{{col.partida}}</td>
+								<td align="left">{{col.tit}}</td>
+								<td align="left">{{col.desc}}</td>
+								<td align="center" style="color:#000;">{{col.um|default:'-'}}</td>
+								{% if col.cant != 0 %}
+								<td align="center" style="color:#000;">{{col.cant|default:'-'|stringformat:'d'}}</td>
+								{% else %}
+								<td class="text-center" style="color:#000;"> - </td>
+								{% endif %}
+								{% if col.cu != 0 and col.cu != '' %}
+								<td align="right" style="color:#000;"> {{col.cu}}</td>
+								{% else %}
+								<td class="text-center" style="color:#000;"> - </td>
+								{% endif %}
+								{% if col.ct != 0 and col.ct != '' %}
+								<td align="right" style="color:#000;"> {{col.ct}}</td>
+								{% else %}
+								<td class="text-center" style="color:#000;"> - </td>
+								{% endif %}
+								{% if col.ifip != 0 and col.ifip != ''%}
+								<td align="right" style="color:#000;"> {{col.ifip}}</td>
+								{% else %}
+								<td class="text-center" style="color:#000;">-</td>
+								{% endif %}
+								{% if col.iue != 0 and col.iue != '' %}
+								<td align="right" style="color:#000;"> {{col.iue}}</td>
+								{% else %}
+								<td class="text-center" style="color:#000;">-</td>
+								{% endif %}
+								{% if col.iotros != 0 and col.iotros != '' %}
+								<td align="right" style="color:#000;"> {{col.iotros}}</td>
+								{% else %}
+								<td class="text-center" style="color:#000;">-</td>
+								{% endif %}
+								{% for m in col.cant_meses %}
+									{% if m != 0 %}
+									<td align="right" class="text-info" style="width:10%;"> {{m}}</td>
+									{% else %}
+									<td align="center" style="width:10%;"> - </td>
+									{% endif %}
+								{% endfor %}
+							</tr>
+							{% endfor%}
+						</tbody>
+					</table>
+				</div>
+			{% endif%}
+		<!--aki-->
+
+	</div>
+	
+</div>
+	
+
+{% endblock%}

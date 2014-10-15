@@ -1,0 +1,271 @@
+{% extends "base3.html"%}
+{% block js%}
+<script src="/media/js/fipValidacion.js"></script>
+ <script src="/media/js/bootstrap-collapse.js"></script>
+ <script src="/media/js/otro.js"></script>
+ <style type="text/css">
+  .modal{
+    width:100%; /*Toma el 100% del ancho de la página*/
+    height:100% auto; /*Toma el 100% del alto de la página*/
+    position:fixed; /*Con este código hacemos que el contenedor se mantenga en la pantalla y para que tome las dimensiones del body y no de la entrada*/
+    background-color: rgba(25, 0, 0, 0.01); /*Color de fondo, incluye opacidad del 90%*/
+    top:0; /*Position superior*/
+    left:0; /*Posición lateral*/
+    z-index:9999; /*Evitamos que algún elemento del blog sobreponga la ventana modal*/
+  }
+  .modal-dialog{
+    top:20px;
+    margin:100px auto; /*Separación arriba y centrado*/
+    font-size:12px; /*Tamaño de la fuente*/
+    widows: 4px;0%; /*Ancho del contenedor*/
+    height:100% auto;
+    width: 1200px;
+    /*text-align:center; /*Alineación del texto*/
+    color:#222; /*Color del texto*/
+    background:#000; /*Color de fondo*/
+  }
+  .modal-dialog2{
+    top:20px;
+    margin:100px auto; /*Separación arriba y centrado*/
+    font-size:13px; /*Tamaño de la fuente*/
+    widows: 4px;0%; /*Ancho del contenedor*/
+    height:100% auto;
+    width: 1000px;
+    color:#222; /*Color del texto*/
+    background:#000; /*Color de fondo*/
+  }
+  .modal-content{
+    color:#1c1c10; /*Color del texto*/
+    background:#fffffe; /*Color de fondo*/
+    height:100%;
+    border:20px;
+    font-size:13px; /*Tamaño de la fuente*/
+    border-radius: 0px;
+  }
+  .modal-header{
+    color:#fff; /*Color del texto*/
+    background:#383821; /*Color de fondo*/
+    text-align:center; /*Alineación del texto*/
+    font-size:16px; /*Tamaño de la fuente*/
+    height:50px;
+  }
+  .modal-header .close{
+    color:#FFF; /*Color de fondo*/
+    font-size:20px;
+    opacity: 0.2;
+  }
+  .modal-footer{
+    color:#FFF; /*Color de fondo*/
+    font-size:20px;
+    opacity: 0.9;
+    background:#333;
+    
+    
+  }
+  
+</style>
+ {% endblock %}
+{% block contenido %}
+{% include 'base/frmModalSelecCliente.html'%}
+
+<div class = "col-lg-7">
+<form method="POST" class="form-horizontal" role="form" name="frmConvenio" id = "frmConvenio" enctype="multipart/form-data">
+{% csrf_token %}
+<div class="form-group">
+    <div class="container">
+        <div class="panel panel-default">
+            <div class="panel-heading" style="background-color:#383821; color:#fff;">
+                <center>Datos del Convenio</center>
+            </div>
+            <div class="panel-body">
+                           
+                    <div class="form-group">
+                        <label class="col-lg-2  control-label">Codigo</label>
+                        <div class="col-lg-4">
+                          {{form.IdCFMProy}}
+                        </div>
+                        <label class="col-lg-2  control-label">Estado</label>
+                        <div class=" col-lg-4">
+                          {{form.IdEstMProy}}
+                        </div>
+                        <label class="col-lg-2 control-label">Convocatoria</label>
+                        <div class="col-lg-2">
+                          {{form.IdConv}}
+                        </div>
+                    </div>
+                      
+                    <div class="form-group">
+                        <label class="col-lg-2 control-label">Unidad Ejecutora</label>
+                        <div class="col-lg-9">
+                          <input type="text" class="form-control" name="idMCli" id="idMCli">
+                          <input type="text" class="form-control" disabled="disabled" name="nomMCli" id="nomMCli" placeholder = "Nombre de la Unidad Ejecutora"> 
+                        </div> 
+                        <a href="#seleccionarUnidadEjecutora" data-toggle="modal" class="btn btn-danger bnt-lg glyphicon glyphicon-search" style="color:#fff;"></a>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-lg-2 control-label">Nombre del Proyecto</label>
+                        <div class="col-lg-10">
+                          {{form.NomMProy}}
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-lg-2 control-label">Sector</label>
+                        <div class="col-lg-4">
+                          {{form.IdSector}}
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-lg-2 control-label">Banco</label>
+                        <div class="col-lg-3">
+                          {{form.IdBanco}}
+                        </div>
+
+                        <label class="col-lg-3 control-label">Cod. Cuenta Interbancaria</label>
+                        <div class="col-lg-4">
+                          {{form.NumCtaInterMProy}}
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-lg-2 control-label">PDF Proyecto</label>
+                        <div class="col-lg-4">
+                          {{form.RutaPDFMProy}}
+                            <!--<input type="file" class="form-control" id="rutaPDFDProt"  name="rutaPDFDProt" placeholder="Buscar la Unidad Ejecutora">-->
+                        </div>
+                                            
+                    </div>
+
+                   
+
+                    <div class="hide form-group">
+                        <label class="col-lg-2 control-label">OCR A. CIERRE</label>
+                        <div class="col-lg-10">
+                          {{form.RutaOCRACMProy}}
+                            <!--<input type="file" class="form-control" id="rutaOCRDProt"  name="rutaOCRDProt" placeholder="Buscar la Unidad Ejecutora">-->
+                        </div>                    
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-lg-2 control-label">PDF Convenio</label>
+                        <div class="col-lg-4">
+                          {{form.RutaPDFConvMProy}}
+                          
+                            <!--<input type="file" class="form-control" id="rutaOCRDProt"  name="rutaOCRDProt" placeholder="Buscar la Unidad Ejecutora">-->
+                        </div>            
+                    </div>
+
+                    <div class="form-group">
+                      <label class="col-lg-2 control-label">PDF Acta de Cierre</label>
+                        <div class="col-lg-5">
+                          {{form.RutaPDFACMProy}}
+                            <!--<input type="file" class="form-control" id="rutaPDFDProt"  name="rutaPDFDProt" placeholder="Buscar la Unidad Ejecutora">-->
+                        </div>    
+                       
+
+                        <label class="col-lg-2 control-label">Fecha Firma</label>
+                        <div class="col-lg-3 pull-right">
+                          {{form.FecIngMProy}}
+                        </div>
+                    </div>
+                      
+            </div>
+        </div>
+
+        
+
+        <div class="panel panel-default">
+            <div class="panel-heading" style="background-color:#383821; color:#fff;">
+                <center>Financiamiento</center>
+            </div>
+            <div class="panel-body">
+                
+                    <div class="form-group">
+                      
+                      <label class="col-lg-2 control-label"><center></center></label>
+                      <label class="hide col-lg-2 control-label"><center>%</center></label>
+                      <label class="col-lg-2 control-label"><center>FIP</center></label>
+                      <label class="col-lg-2 control-label"><center>Un. Ejec. </center></label>
+                      <label class="col-lg-2 control-label"><center>Asoc. </center></label>
+                      <label class="col-lg-2 control-label"><center>TOTAL</center></label>
+                    </div>
+                  
+                    <div class="form-group">
+                      
+                      <label class="col-lg-2 control-label">REAL</label>
+                      <div class="hide col-lg-2">
+                        <input type="text" class=" form-control text-right" disabled="disabled" name="" id="" placeholder = "0.0">
+                      </div>
+                      <div class="col-lg-2">
+                        {{form.MontInvFipMProy}}
+                      </div>
+                      <div class="col-lg-2">
+                        {{form.MontInvCliMProy}}
+                      </div>
+                      <div class="col-lg-2">
+                        <input type="text" class="form-control text-right montoReal" name="montTInvRealOtrMProy" id="montTInvRealOtrMProy" value = "0">
+
+                      </div>
+                      <div class="col-lg-2">
+                        {{form.MontTotMProy}}
+                      </div>
+                    </div>
+          
+            </div>
+        </div>
+
+        <div class="panel panel-default">
+            <div class="panel-heading" style="background-color:#383821; color:#fff;">
+                <center>Cronograma</center>
+            </div>
+            <div class="panel-body">
+
+                    <div class="form-group">
+                      
+                      <label class="col-lg-2 control-label"></label>
+                      <label class="col-lg-3 control-label"><center>Inicio</center></label>
+                      <label class="col-lg-3 control-label"><center>Fin</center></label>
+                      <label class="hide col-lg-3 control-label"><center>Entrega</center></label>
+                    </div>
+                  
+                    <div class="hide form-group">
+                      <label class="col-lg-2 control-label">Esperado</label>
+                      <div class="col-lg-3">
+                        <input type="date" class="form-control" name="fecIniMProy" id="fecIniMProy" placeholder="yyyy-mm-dd">
+                      </div>
+                      <div class="col-lg-3">
+                        <input type="date" class="form-control" name="fecFinMProy" id="fecFinMProy" placeholder="yyyy-mm-dd">
+                      </div>
+                      <div class="col-lg-3">
+                        <input type="date" class="form-control" name="fecEntMProy" id="fecEntMProy" placeholder="yyyy-mm-dd">
+                      </div>
+                    </div>
+
+                    <div class="form-group">
+                      <label class="col-lg-2 control-label">Fecha</label>
+                      <div class="col-lg-3">
+                        {{form.FecIniMProy}}
+                      </div>
+                      <div class="col-lg-3">
+                        {{form.FecFinMProy}}
+                      </div>
+                      
+                    </div>
+                  
+            </div>
+        </div>
+        <div class="panel panel-default">
+            <div class="panel-body text-center">
+                <button type="submit" class="btn btn-success" id="btnGrabar"><span class="glyphicon glyphicon-ok"></span> Guardar</button>
+                <a href="{% url "vista_Convenios" 1%}" class="btn btn-danger" id="btnCancelar" style="color:#fff;"><span class="glyphicon glyphicon-remove"></span> Cancelar</a>
+            </div>
+        </div>
+    </div>    
+</div>
+
+</form>
+</div>
+
+{% endblock %}

@@ -1,0 +1,114 @@
+<div class="modal fade" id="nuevo_personal_modal" >
+  <div class="modal-dialog2">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <!--<h4 class="modal-title" id="myModalLabel">Nuevo Usuario - FIP</h4>-->
+        <p class="text-warning text-center" style="font-size:20px;">Nuevo Personal - FIP</p>
+      </div>
+      <div class="modal-body">
+
+            
+            <form method="post" class="form-horizontal" role="form" name="frm_nuevo_personal" id ="frm_nuevo_personal">
+                {% csrf_token %}
+
+                <div class="form-group">
+                  <label class="col-lg-2 control-label">Ap. Paterno</label>
+                  <div class="col-lg-10">
+                    {{frm.ApePMPer}}
+                  </div>
+                </div>
+                
+                <div class="form-group">
+                  <label class="col-lg-2 control-label">Ap. Materno</label>
+                  <div class="col-lg-10">
+                    {{frm.ApeMMPer}}
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label class="col-lg-2 control-label">Nombres</label>
+                  <div class="col-lg-10">
+                    {{frm.NomMPer}}
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label class="col-lg-2 control-label">F. Nacimiento</label>
+                  <div class="col-lg-4">
+                    {{frm.FechNacMPer}}
+                  </div>
+
+                  <label class="col-lg-2 control-label">Tipo Pers.</label>
+                  <div class="col-lg-4">
+                    {{frm.IdTipPerMPer}}
+                  </div>
+
+                </div>
+                
+                <div class="form-group">
+                  <label class="col-lg-2 control-label">Tipo Docum.</label>
+                  <div class="col-lg-4">
+                    {{frm.IdTipDocMPer}}
+                  </div>
+                  
+                  <label class="col-lg-2 control-label">Nº Documento</label>
+                  <div class="col-lg-4">
+                    {{frm.NDocMPer}}
+                  </div>
+
+                </div>
+
+                <div class="form-group">
+                  <label class="col-lg-2 control-label">F. Ingreso</label>
+                  <div class="col-lg-4">
+                    {{frm.FecIngMPer}}
+                  </div>
+                </div>
+
+                <div class="form-group">
+
+                  <label class="col-lg-2 control-label">Telef/Cel (1)</label>
+                  <div class="col-lg-4">
+                    {{frm.Tel1MPer}}
+                  </div>
+
+                  <label class="col-lg-2 control-label">Telef/Cel (2)</label>
+                  <div class="col-lg-4">
+                    {{frm.Tel2MPer}}
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="col-lg-2 control-label">E-mail (1)</label>
+                  <div class="col-lg-10">
+                    {{frm.Email1MPer}}
+                  </div>            
+                </div>
+                <div class="form-group">
+                  <label class="col-lg-2 control-label">E-mail (2)</label>
+                  <div class="col-lg-10">
+                    {{frm.Email2MPer}}
+                  </div>            
+                </div>
+                <div class="form-group">
+                  <label class="col-lg-2 control-label">Departamento</label>
+                  <div class="col-lg-4">
+                    {{frm.IdArea}}
+                  </div>            
+                </div>
+              </form>
+              <div class="hide alert alert-danger" id="mensaje_modal">
+                  <button type="button" class="close" data-dismiss="alert" aria-hidden="true" id="false">&times;</button>
+                  <p id="mensaje_personal"></p>
+              </div>
+
+        
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-success" id="grabar_personal" name="grabar_personal"><span class="glyphicon glyphicon-save"></span> Guardar</button>
+        <button type="button" class="btn btn-danger" data-dismiss="modal" aria-hidden="true"><span class="glyphicon glyphicon-remove"></span> Cerrar</button>
+         
+      </div>
+    </div>
+  </div>
+</div>

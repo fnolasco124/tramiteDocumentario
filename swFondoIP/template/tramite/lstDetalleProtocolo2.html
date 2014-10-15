@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+{% block js%}
+
+{% endblock %}
+{% block contenido %}
+<form clas="well" method="POST" action="." enctype="multipart/form-data">
+{% csrf_token %}
+{{form}}
+<input type="submit" value="Submit" />
+</form>
+{% endblock %}

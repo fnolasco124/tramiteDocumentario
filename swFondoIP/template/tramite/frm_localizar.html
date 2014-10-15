@@ -1,0 +1,390 @@
+{% extends 'base3.html' %}
+{% block js%}
+<script src="/media/js/uitablefilter.js"></script>
+<style type="text/css">
+  	.modal{
+		width:100%; /*Toma el 100% del ancho de la página*/
+		height:100% auto; /*Toma el 100% del alto de la página*/
+		position:fixed; /*Con este código hacemos que el contenedor se mantenga en la pantalla y para que tome las dimensiones del body y no de la entrada*/
+		background-color: rgba(25, 0, 0, 0.01); /*Color de fondo, incluye opacidad del 90%*/
+		top:0; /*Position superior*/
+		left:0; /*Posición lateral*/
+		z-index:9999; /*Evitamos que algún elemento del blog sobreponga la ventana modal*/
+	}
+	.modal-dialog{
+		top:20px;
+		margin:100px auto; /*Separación arriba y centrado*/
+		font-size:12px; /*Tamaño de la fuente*/
+		widows: 4px;0%; /*Ancho del contenedor*/
+		height:100% auto;
+		width: 1400px;
+
+		/*text-align:center; /*Alineación del texto*/
+		color:#222; /*Color del texto*/
+		background:#000; /*Color de fondo*/
+	}
+	.modal-content{
+		color:#1c1c10; /*Color del texto*/
+		background:#fffffe; /*Color de fondo*/
+		height:100%;
+		border:20px;
+		font-size:15px; /*Tamaño de la fuente*/
+		border-radius: 0px;
+
+	}
+	.modal-header{
+		color:#fff; /*Color del texto*/
+		background:#383821; /*Color de fondo*/
+		text-align:center; /*Alineación del texto*/
+		font-size:16px; /*Tamaño de la fuente*/
+		height:50px;
+	}
+	.modal-header .close{
+		color:#FFF; /*Color de fondo*/
+		font-size:20px;
+		opacity: 0.2;
+	}
+	.modal-footer{
+		color:#FFF; /*Color de fondo*/
+		font-size:20px;
+		opacity: 0.9;
+		background:#333;
+	}
+	.documento-enviado{
+		background: #D3E3BF; 
+		/*color: #F1F3DD;*/
+	}
+</style>
+<script type = "text/javascript">
+$(document).on("ready", function(){
+	var nombre = [];
+	var valores = [];
+	$("#lista_protocolos").on("click", ".transferencia", function(){
+		codigo = $(this).attr("codigo");
+		$.ajax({
+			data : {'codigo': codigo, 'opcion': 'filtrar'},
+			url : '/ajax/transferencia_dprotocolo/',
+			type: 'get',
+			success: function(data){
+				$("#transferencia_html").html(data.filtro);
+			}
+		});
+	});
+
+	$("#transferencia_html").on("change", ".destino_doc", actualizar_destino);
+	$("#transferencia_html").on("change", ".destino_prot", actualizar_destino_prot);
+	$("#transferencia_html").on("click", ".transf_doc", transferir_documento);
+	$("#transferencia_html").on("click", "#transf_protocolo", activar_transf_prot);
+	$("#transferencia_html").on("click", "#btnTransferProt", transferir_documento);
+	$("#transferencia_html").on("keyup", "#filtro_historial", filtro_historial);
+	function filtro_historial(){
+		$.uiTableFilter($("#tabla_historial"), this.value);
+    };
+
+    $.expr[':'].Contains = function(x, y, z){
+            return jQuery(x).text().toLowerCase().indexOf(z[3].toLowerCase())>=0;
+        };
+	
+	function actualizar_destino_prot(){
+		destino = $(this).val();
+		if (destino !== ""){
+			$("#btnTransferProt").attr("dest", destino);
+			$("#btnTransferProt").removeClass("hide");
+		}else{
+			$("#btnTransferProt").addClass("hide");
+			$("#btnTransferProt").attr("dest", "");
+		}
+
+	};
+	function activar_transf_prot(){
+		$(".destino_prot").removeClass("hide");
+
+	};
+	function actualizar_destino(){
+		destino = $(this).val();
+		if (destino !== ""){
+			codigo = ($(this).attr("doc")).trim();
+			$("#btn"+codigo).attr("dest", destino);
+			$("#btn"+codigo).removeClass("hide");
+		}else{
+			$("#btn"+codigo).addClass("hide");
+			$("#btn"+codigo).attr("dest", "");
+		}
+	};
+
+	function transferir_documento(){
+		dest = $(this).attr("dest");
+		doc = $(this).attr("cod");
+		tipo_doc = $(this).attr("tipo_doc");
+		
+		$.ajax({
+			data: {'opcion': 'transferir', 'tipo_doc': tipo_doc, 'cod': doc.trim(), 'dest': dest},
+			url: '/ajax/transferencia_dprotocolo/',
+			type: 'get',
+			success: function(data){
+				for(var i=0; i< data.length; i++){
+					$("#tr"+data[i].fila).addClass("documento-enviado");
+					html = '<tr style="font-size:10px;"><td>'+ data[i].documento +'</td><td>'+ data[i].enviado_por +'</td><td>'+ data[i].recep_por +'</td><td>'+ data[i].fecha +'</td></tr>'
+					//$("#tabla_historial").append(html); agrega fila al final
+					$("#tabla_historial").prepend(html); //agrega inicio al final
+				}				
+			}
+		});	
+	};
+
+	$("#lista_protocolos").on('click', '.historial', function(){
+		protocolo = $(this).attr("codigo");
+		$.ajax({
+			data: {'protocolo':protocolo},
+			url: '/ajax/detalle-localizar/',
+			type: 'get',
+			success: function(data){
+				if(data.html != ""){
+					$("#detalle_modal_localizar").html(data.html);
+				}
+			}
+		});
+		//$("#frm2").show();
+	});
+
+	$("#lista_protocolos").on('click', '.prot-proy', function(){
+		protocolo = $(this).attr("codigo");
+		$.ajax({
+			data: {'protocolo': protocolo},
+			url: '/ajax/protocolo_proyecto/',
+			type: 'get',
+			success: function(data){
+				if(data.html != ""){
+					$("#detalle_modal_localizar").html(data.html);
+				}
+			}
+		});
+	});
+	$("#lista_protocolos").on('click', '.descarga', function(){
+		protocolo = $(this).attr("codigo");
+		$.ajax({
+			data: {'protocolo': protocolo},
+			url: '/ajax/descarga_protocolo/',
+			type: 'get',
+			success: function(data){
+				if(data.html != ""){
+					$("#link_descarga").text('Haz click aqui para descargar.');
+					ruta = data.html;
+					$("#link_descarga").attr("href",ruta)
+				}
+			}
+		});
+	});
+
+	$("#detalle_modal_localizar").on("click", ".prot_por_proy", function(){
+		
+		chk_selec = $('input[name="desc_prot[]"]:checked').length;
+		if (chk_selec > 0){
+			$("#desc_prot_proy").removeClass("hide");
+		}
+		else{
+			$("#desc_prot_proy").addClass("hide");
+		}
+		
+
+	});
+
+	$("#detalle_modal_localizar").on("click", "#protocolos_por_proyecto", function(){
+		if ($("#protocolos_por_proyecto").prop('checked')){
+			$(".prot_por_proy").prop("checked", true);
+			$("#desc_prot_proy").removeClass("hide");
+		} else {
+			$(".prot_por_proy").prop("checked", false);
+			$("#desc_prot_proy").addClass("hide");
+		}
+	});
+	$("#desc_prot_proy").on("click", function(){
+		var chk_select = [];
+		$(".prot_por_proy").each(function(){
+			if($(this).prop("checked")){
+				chk_select.push($(this).attr("codigo"));
+			}
+		});
+		protocolo = chk_select.join(',');
+			
+		$.ajax({
+			data: {'protocolo':protocolo},
+			url: '/ajax/descarga_protocolo/',
+			type: 'get',
+			success: function(data){
+				if (data.html != ""){
+					ruta = data.html;
+					$("#enlace_descarga_grupal").attr("href", ruta);
+					$("#enlace_descarga_grupal").removeClass("hide");
+				}else{
+					$("#enlace_descarga_grupal").attr("href", "#");
+					$("#enlace_descarga_grupal").text("Ha sucedido algun error.");
+				}
+			}
+		});
+
+	});
+
+	$(".close").on("click", function(){
+		$("#enlace_descarga_grupal").addClass("hide");
+		$("#enlace_descarga_grupal").attr("href", "");
+	});
+
+	$("#btnLocalizar").on('click', buscar_protocolo);
+
+	function buscar_protocolo(){
+		$(".parametro").each(function(){
+			if($(this).val() !== ""){
+				nombre.push($(this).attr("name"));
+				valores.push($(this).val());
+			}
+		});
+		//console.log(nombre.join(","));
+		//console.log(valores.join(","));
+		var html = "";
+		$("#lista_protocolos").html(html);
+		
+		$.ajax({
+			data: {'nombres': nombre.join(","), 'valores': valores.join(",")},
+			url: '/ajax/localizar/',
+			type: 'get',
+			success: function(data){
+				console.log(data);
+				for(var i = 0; i< data.length; i++){
+					proyecto = data[i].fields.EmpMProt;
+					cliente = data[i].fields.RespMProt;
+					if(data[i].fields.IdMProy !== null && data[i].fields.IdMProy != null ) {
+						mtr = (data[i].fields.IdMProy).split(','); // Obtenemos los valores separados del natural keys
+						proyecto = mtr[0];
+						cliente = mtr[1];
+					}
+					
+					referencia = "";
+					if(data[i].fields.IdRefMProt === ""){referencia = "Sin referencia";}
+					else{referencia = data[i].fields.IdRefMProt;}
+					html += '<tr style="font-size:12px;"><td>'+data[i].pk+'</td>';
+					html += '<td class = "text-info">'+data[i].fields.NomMProt+'</td>';
+					html += '<td class = "text-primary">'+data[i].fields.DescMProt+'</td>';
+					html += '<td class = "text-warning">'+proyecto +'</td>'; //Nombre del proyecto
+					html += '<td class = "text-info">'+cliente +'</td>'; //Nombre del cliente
+					html += '<td class = "text-muted text-center">'+data[i].fields.FecEntMProt +'</td>';
+					html += '<td class = "text-muted text-center">'+ referencia +'</td>';
+					// Agregar los botones de seguimiento, protocolos por proyecto
+					html += '<td><a href="#frmDetalleLocalizar" role = "button" data-toggle = "modal" class= "historial" codigo = "' + data[i].pk + '" title = "Seguimiento al protocolo"><span class = "text-muted glyphicon glyphicon-transfer"></span></a></td>';
+					html += '<td><a href="#frmDetalleLocalizar" role = "button" data-toggle = "modal" class= "prot-proy" codigo = "' + data[i].pk + '" title = "Ver protocolos del proyecto"><span class = "text-info glyphicon glyphicon-link"></span></a></td>';
+					html += '<td><a href="#" class= "descarga" codigo = "' + data[i].pk + '" title = "Descargar documentación del protocolo"><span class = "text-danger glyphicon glyphicon-compressed"></span></a></td>';
+					html += '<td><a href="#frmTransferencia" role = "button" data-toggle = "modal" class= "transferencia" codigo = "' + data[i].pk + '" title = "Transferencia del protocolo"><span class = "text-danger glyphicon glyphicon-send"></span></a></td></tr>';
+				}
+				//console.log(html);
+				$("#lista_protocolos").html(html);
+				html = "";
+				nombre = [];
+				valores = [];
+				//$("#lista_protocolos").html(html);
+			}
+		});
+	};
+
+})
+</script>
+{% endblock%}
+{% block contenido %}	
+{% include 'base/modal_localizar.html' %}
+{% include 'base/modal_transferencia.html' %}
+<div class="col-lg-12">
+			<h3><p class="text-info text-center text-large">Localizar Protocolo</p></h3>
+			<br>
+			<br>
+			<!--<a href="#" mi="esto es el valor de mio" id="mio" name="mio">esto es mio</a>-->
+			<div class = "col-lg-12">
+			<div class = "col-lg-2"></div>
+			<form class = "form-horizontal col-lg-8">
+				
+				<div class="form-group">
+					<label class="col-lg-2 control-label">N° Protocolo</label>
+					<div class="col-lg-2">
+				    	<input type="text" class="form-control parametro" id="codigo"  name="codigo" placeholder="[Código protocolo]">
+					</div>
+					<label class="col-lg-2 control-label">Descripción</label>
+					<div class="col-lg-6">
+					   	<input type="text" class="form-control parametro" id="descripcion"  name="descripcion" placeholder="[Descripción del protocolo]">
+					</div>
+					
+				</div>
+				<div class="form-group">
+					<label class="col-lg-2 control-label">Convenio</label>
+					<div class="col-lg-2">
+				    	<input type="text" class="form-control parametro" id="cproyecto"  name="cproyecto" placeholder="[Código convenio]">
+					</div>
+					<label class="col-lg-2 control-label">Nombre del Convenio</label>
+					<div class="col-lg-6">
+					   	<input type="text" class="form-control parametro" id="proyecto"  name="proyecto" placeholder="[Nombre del convenio]">
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-lg-2 control-label">Unidad Ejecutora</label>
+					<div class="col-lg-10">
+					   	<input type="text" class="form-control parametro" id="cliente"  name="cliente" placeholder="[Unidad Ejecutora]">
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-lg-2 control-label">Empresa</label>
+					<div class="col-lg-5">
+					   	<input type="text" class="form-control parametro" id="empresa"  name="empresa" placeholder="[Nombre de la empresa(solo si el protocolo es de tipo FIP A OTROS)]">
+					</div>
+					<label class="col-lg-1 control-label text-right">Responsable</label>
+					<div class="col-lg-4">
+					   	<input type="text" class="form-control parametro" id="responsable"  name="responsable" placeholder="[Nombre del responsable]">
+					</div>
+				</div>
+				
+				<div class="form-group">
+					<label class="col-lg-2 control-label">Rango de Fechas</label>
+					<label class="col-lg-1 control-label">Del</label>
+					<div class="col-lg-3">
+					    <input type="date" class="form-control parametro text-right" id="inicio"  name="inicio" value="2014-01-01">
+					</div>
+					<label class="col-lg-1 control-label">Al</label>
+					<div class="col-lg-3">
+					    <input type="date" class="form-control parametro text-right" id="fin"  name="fin" value="{{fecha_actual|date:'Y-m-d'}}">
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-lg-2 control-label">Referencia</label>
+					<div class="col-lg-4">
+					   	<input type="text" class="form-control parametro" id="referencia"  name="referencia" placeholder="[Referencia]">
+					</div>
+					<a href = "#" id = "btnLocalizar" name = "btnLocalizar" class = "btn btn-danger"><span class = "glyphicon glyphicon-search"></span> Busqueda </a> 
+					<a class = "pull-right" href = "#" id = "link_descarga" ></a>
+				</div>
+			</form>
+			</div>
+
+			<br>
+			
+			<table class="table table-condensed" id="tabla" name="tabla" border="0">
+				<thead style="background-color: #222; color: #FAFAFA">
+					<tr>
+						<th class="text-center" style="width:8%;">Protocolo</center></th>
+						<th class="text-center" style="width:11%">Nombre</center></th>
+						<th class="text-center" style="width:26%;">Descripción</center></th>
+						<th class="text-center" style="width:18%;">Convenio / (Empresa)</center></th>
+						<th class="text-center" style="width:18%;">Unidad Ejecutora / (Responsable)</center></th>
+						<th class="text-center" style="width:6%;">Fecha Recepción</center></th>
+						<th class="text-center" style="width:6%;">Referencia</center></th>
+						<th style = "width:2%"></th>
+						<th style = "width:2%"></th>
+						<th style = "width:2%"></th>
+					</tr>
+				</thead>
+				
+				<tbody id="lista_protocolos" name = "lista_protocolos">
+					
+									
+				</tbody>
+
+			</table>
+			
+</div>
+	
+{% endblock %}

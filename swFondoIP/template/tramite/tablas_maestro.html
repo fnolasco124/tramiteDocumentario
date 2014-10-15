@@ -1,0 +1,153 @@
+{% extends 'base3.html' %}
+{% block js%}
+<script type="text/javascript">
+$(document).on("ready", function(){
+	$("#agregar_tabla").on("click", nuevo_registro);
+	$("#tmaestro").on("click", "#btncancelar", cancelar_registro);
+	$("#tmaestro").on("click", "#btngrabar", grabar_registro);
+	$(".eliminar_registro").on("click", eliminar_maestro);
+	function cancelar_registro(){
+		$(this).parent().parent().hide();
+		$("#agregar_tabla").removeClass("hide");
+	};
+	function grabar_registro(){
+		nombre = $("#nombre").val();
+		prop = $("#prop").val();
+		abr = $("#abr").val();
+
+		$.ajax({
+			data: {'nombre': nombre, 'abr': abr, 'prop': prop},
+			url: '/ajax/grabar_mtabla/',
+			type: 'get',
+			success: function(data){
+				if(data.estado === true){
+					
+					nFila = '<tr class="text-info"><td>'+data.nCodigo+'</td><td>'+nombre+'</td><td>'+abr+'</td><td>'+prop+'</td><td><span class="text-info glyphicon glyphicon-ok"></span></td><td><a id="editar_tabla_maestro" codigo="'+data.nCodigo+'" href="#"><span class="text-warning glyphicon glyphicon-pencil"></span></a></td><td><a id="eliminar_registro" codigo="'+data.nCodigo+'" modelo="1" href="#"><span class="text-danger glyphicon glyphicon-trash"></span></a></td><td><a id="detalle_tabla_maestro" codigo="'+data.nCodigo+'" href="#"><span class="text-success glyphicon glyphicon-th-list"></span></a></td></tr>';
+					$("#newrecord").hide();
+					$("#tmaestro").prepend(nFila);
+
+				}else{
+					alert(data.estado);
+
+				}
+			},
+			error: function(data){
+				alert("No se logró comunicar con el servidor");
+			}
+		});
+		$("#agregar_tabla").removeClass("hide");	
+	};
+	function nuevo_registro(){
+		registro_html = '<tr id="newrecord" name="newrecord"><td></td><td><input type="text" id="nombre" name = "nombre" placeholder="[Nombre de la tabla]"></td><td><input type="text" id = "abr" nombre = "abr" placeholder="[Abreviatura]"></td><td><input type="text" id = "prop" name ="prop" placeholder="[Prop]"></td><td><a href="#" id="btngrabar" name ="btngrabar" title = "Guardar"><span class="glyphicon glyphicon-floppy-saved text-danger"></span></td><td><a href="#" title ="Cancelar" id="btncancelar" name ="btncancelar"><span class="glyphicon glyphicon-floppy-remove text-warning"></span></td>';
+		$("#tmaestro").prepend(registro_html);
+		$(this).addClass("hide");
+
+	};
+
+    function eliminar_maestro(){
+        codigo = $(this).attr("codigo");
+        modelo = $(this).attr("modelo");
+        r = confirm("Desea elminar el registro");
+        if(r === true){
+            $.ajax({
+                  data: {'codigo': codigo, 'modelo':modelo},
+                  url: '/ajax/eliminar_registro/',
+                  type: 'get',
+                  success: function(data){
+                      if (data.mensaje === true){
+                          //alert("Archivo adjunto eliminado.");
+                      $("#tr"+codigo).fadeOut("slow", function(){
+                          $(this).remove();
+                      });
+                    }
+                  },
+                  error: function(data){
+                      alert("Error en la comunicacion con el servidor.");
+                  }
+            });
+        }
+    };
+})
+</script>
+{% endblock %}
+{% block contenido %}
+<div class="col-lg-12">
+	<div class="table-responsive col-lg-12">
+		<h3><p class="text-info text-center text-large">Tablas del sistema</p></h3>
+		<br>
+		
+		<br><br>
+		<!-- BOTON PARA BUSCAR POR CAMPO -->
+		<div class="form-group">
+			<a href="#" id="agregar_tabla" class="text-success"><span class="text-success glyphicon glyphicon-plus"></span> Agregar Tabla Maestra</a>
+		</div>
+		<!-- FIN DE BOTON PARA BUSCAR POR CAMPO -->
+		<br>
+		<div class="col-lg-3"></div>
+		<div class="col-lg-6">
+		<table class="table table-condensed" id="tmaestro" name="tmaestro" border="0">
+			<thead style="background-color: #222; color: #FAFAFA;">
+				<tr>
+					<th class="text-center" style="width:10%;">Código</th>
+					<th class="text-center" style="width:45%;">Nombre</th>
+					<th class="text-center" style="width:5%;">Abreviatura</th>
+					<th class="text-center" style="width:5%;">Prop</th>
+					<th class="text-center" style="width:5%;">Estado</th>
+				</tr>
+			</thead>
+			<tbody>		
+			{% for obj in  lista %}
+				<tr id="tr{{obj.IdMTabla}}" class="text-info">
+					<td ><center>{{ obj.IdMTabla }}</center></td>
+					<td >{{obj.NomMTabla}}</center></td>
+					<td >{{obj.AbrMTabla}}</td>
+					<td >{{obj.PropMTabla}}</td>
+					{% if obj.EstMTabla == '0' %}
+					<td ><span class="text-info glyphicon glyphicon-remove">{{obj.EstMTabla}}</span></td>
+					{% else %}
+					<td ><span class="text-info glyphicon glyphicon-ok"></span></td>
+					{% endif %}
+					<td style="width:5%;"><a href="#" id="editar_maestro" codigo="{{obj.IdMTabla}}"><span class="text-warning glyphicon glyphicon-pencil"></span></a></td>
+					<td style="width:5%;"><a href="#" class="eliminar_registro" codigo="{{obj.IdMTabla}}" modelo="1"><span class="text-danger glyphicon glyphicon-trash"></span></a></td>
+					<td style="width:5%;"><a href="#" id="detalle_maestro" codigo="{{obj.IdMTabla}}"><span class="text-success glyphicon glyphicon-th-list"></span></a></td>
+					
+				</tr>
+			{% endfor %}
+			</tbody>
+			
+
+		</table>
+		</div>
+		<div class="col-lg-3"></div>
+
+	</div>
+	<div class = "pull-right" style = "padding-top:0%;">
+		{% if  page_obj %}
+		<div class="pagination" style = "padding-top:0%;">
+			<ul class="pagination">
+				<li><a href="?page=1"> << </a></li>
+				{% if page_obj.has_previous %}
+					<li><a href="?page={{page_obj.previous_page_number}}"> Anterior </a></li>
+				{% else %}
+					<li><a href="#"> Anterior </a></li>
+				{% endif %}
+				{% if page_obj.has_next %}
+					<li><a href="?page={{page_obj.next_page_number}}"> Siguiente </a></li>
+				{% else %}
+					<li><a href="#"> Siguiente </a></li>
+				{% endif %}
+				<li><a href="?page={{page_obj.paginator.num_pages}}"> >> </a></li>
+
+			</ul>
+			<h4>Pagina {{page_obj.number }} de {{page_obj.paginator.num_pages}}</h4>
+	
+		</div>
+		{% endif %}
+	</div>
+</div>	
+			
+	
+
+
+
+{% endblock %}

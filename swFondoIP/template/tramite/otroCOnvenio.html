@@ -1,0 +1,33 @@
+{% extends "base.html"%}
+{% block js%}
+<script src="/media/js/fipValidacion.js"></script>
+ <script src="/media/js/bootstrap-collapse.js"></script>
+ <script src="/media/js/otro.js"></script>
+ {% endblock %}
+{% block contenido %}
+{% include 'base/frmModalSelecCliente.html'%}
+<!-- MENU DEL LADO DERECHO -->
+<div class="col-lg-2">
+    <div class="col-lg-12">
+      <img src="{{MEDIA_URL}}images/imgFIP/log.jpg" alt="" class="img-rounded img-responsive">
+      <div class="list-group">
+          <a href="#" class="list-group-item active text-center" style="font-size:17px">Tramite Documentario</a>
+          <a href="{% url "vista_protocolo"%}" class="list-group-item">Nuevo Protocolo</a>
+          <a href="{% url "vista_convenio"%}" class="list-group-item" style= "color:#424242; font-weight:bold">Convenio</a>
+          
+          <a href="{% url "vista_localizarProtocolo"%}" class="list-group-item">Localizar Protocolo</a>
+          <a href="{% url "vista_buscarOCR"%}" class="list-group-item">Buscar en OCR</a>
+      </div>
+    </div>
+  </div>
+<!-- FIN DEL MENU-->
+
+<div class="col-lg-7">
+  <form method="POST" action="." class="form-horizontal" role="form" name="frmConvenio" id = "frmConvenio" enctype="multipart/form-data">
+  {% csrf_token %} 
+  {{form.as_p}}
+</form>
+</div>
+
+
+{% endblock %}

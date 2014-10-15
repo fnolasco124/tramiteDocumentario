@@ -1,0 +1,80 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>AppWeb - Fondo Italo Peruano</title>
+<link rel="shortcut icon" href="http://www.fondoitaloperuano.org/wp-content/themes/fondoitaloperuano/images/favicon.png" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<!--link rel="stylesheet" href="assets/css/bootstrap.min.css"/-->
+<link href="/media/bootstrap/css/bootstrap.css" rel="stylesheet">
+<link href="/media/bootstrap/css/bootstrap-responsive.css" rel="stylesheet">
+<link rel="stylesheet" href="/media/bootstrap/css/font-awesome.min.css" />
+<!--[if IE 7]><link rel="stylesheet" href="assets/css/font-awesome-ie7.min.css" /><![endif]-->
+<link rel="stylesheet" href="/media/bootstrap/css/ace-fonts.css" />
+<link rel="stylesheet" href="/media/bootstrap/css/ace.min.css" />
+<link rel="stylesheet" href="/media/bootstrap/css/ace-rtl.min.css" />
+<!--[if lte IE 8]><link rel="stylesheet" href="assets/css/ace-ie.min.css" /><![endif]-->
+<!--[if lt IE 9]><script src="assets/js/html5shiv.js"></script>
+<script src="assets/js/respond.min.js"></script><![endif]-->
+</head>
+<body class="login-layout" style = "background-color: #232323;">
+<div class="main-container">
+    <div class="main-content">
+        <div class="row">
+            <div class="col-sm-10 col-sm-offset-1">
+                <div class="login-container">
+                    <div class="center">
+                        <h1><span class="razor">AppWeb</span></h1>
+                        <h4 class="administracion">Fondo Italo Peruano</h4>
+                            <div class="space-6"></div>
+                            <div class="position-relative">
+                                <div id="login-box" class="login-box visible widget-box no-border">
+                                    <div class="widget-body">
+                                        <div class="widget-main">
+                                            <h4 class="header blue lighter bigger">Ingrese su información</h4>
+                                            <div class="space-6"></div>
+                                            <form id="frmLogin" name="frmLogin" method="post" action=".">
+                                            {% csrf_token %}
+                                            <fieldset>
+                                                <label class="block clearfix">
+                                                    <span class="block input-icon input-icon-right">
+                                                    <input type="text" class="form-control" placeholder="Usuario" name="username"/>
+                                                    <i class="icon-user"></i></span>    
+                                                </label>
+                                                <label class="block clearfix">
+                                                    <span class="block input-icon input-icon-right">
+                                                    <input type="password" class="form-control" placeholder="Password" name="password"/>
+                                                    <i class="icon-lock"></i></span>
+                                                </label>
+                                                <div class="space"></div>
+                                                <div class="clearfix">
+                                                    <input type="submit" value="Ingresar" class="width-35 pull-right btn btn-sm btn-primary" />
+                                                </div>
+                                                <div class="space-4"></div>
+                                            </fieldset>
+                                            </form>
+                                        </div>
+                                        <div class="toolbar clearfix">
+                                            
+                                            <div style="width:400px;">
+                                                {% if mensaje %}
+                                                <a href ="#" class="text-right" style= "color:#000000; font-weight:bold">{{mensaje}}</a>
+                                                {% else %}
+                                                <a href="http://www.fondoitaloperuano.org" target="_blank" class="forgot-password-link">Desarrollado por FIP</a>
+                                                {% endif %}
+                    
+                                            </div>
+                                            
+                                            
+                                        </div>
+                                 </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

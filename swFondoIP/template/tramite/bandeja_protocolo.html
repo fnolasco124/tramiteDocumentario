@@ -1,0 +1,329 @@
+	 {% extends 'base3.html' %}
+{% block js%}
+<script src="/media/js/otro.js"></script>
+<!--<script src="http://cdn.jquerytools.org/1.2.7/full/jquery.tools.min.js"></script>-->
+
+<style type="text/css">
+	p {line-height: 50%;}
+  	.modal{
+		width:100%; /*Toma el 100% del ancho de la página*/
+		height:100% auto; /*Toma el 100% del alto de la página*/
+		position:fixed; /*Con este código hacemos que el contenedor se mantenga en la pantalla y para que tome las dimensiones del body y no de la entrada*/
+		background-color: rgba(25, 0, 0, 0.01); /*Color de fondo, incluye opacidad del 90%*/
+		top:0; /*Position superior*/
+		left:0; /*Posición lateral*/
+		z-index:9999; /*Evitamos que algún elemento del blog sobreponga la ventana modal*/
+	}
+	.seleccionado{
+		background-color: #FFFFCC;
+	}
+	.modal-dialog{
+		top:20px;
+		margin:100px auto; /*Separación arriba y centrado*/
+		font-size:12px; /*Tamaño de la fuente*/
+		widows: 4px;0%; /*Ancho del contenedor*/
+		height:100% auto;
+
+		/*text-align:center; /*Alineación del texto*/
+		color:#222; /*Color del texto*/
+		background:#000; /*Color de fondo*/
+	}
+	.modal-dialog2{
+		top:20px;
+		margin:100px auto; /*Separación arriba y centrado*/
+		font-size:13px; /*Tamaño de la fuente*/
+		widows: 4px;0%; /*Ancho del contenedor*/
+		height:100% auto;
+		width: 1200px;
+		color:#222; /*Color del texto*/
+		background:#000; /*Color de fondo*/
+	}
+	.modal-content{
+		color:#1c1c10; /*Color del texto*/
+		background:#fffffe; /*Color de fondo*/
+		height:100%;
+		border:20px;
+		font-size:13px; /*Tamaño de la fuente*/
+		border-radius: 0px;
+	}
+	.modal-header{
+		color:#fff; /*Color del texto*/
+		background:#383821; /*Color de fondo*/
+		text-align:center; /*Alineación del texto*/
+		font-size:16px; /*Tamaño de la fuente*/
+		height:50px;
+	}
+	.modal-header .close{
+		color:#FFF; /*Color de fondo*/
+		font-size:20px;
+		opacity: 0.2;
+	}
+	.modal-footer{
+		color:#FFF; /*Color de fondo*/
+		font-size:20px;
+		opacity: 0.9;
+		background:#333;
+	}
+	.bs-callout{
+		padding:20px;
+		margin:20px 0;
+		border:1px solid #eee;
+		border-left-width:5px;
+		border-radius:3px
+	}
+	.bs-callout h4{
+		margin-top:0;
+		margin-bottom:5px
+	}
+	.bs-callout p:last-child{
+		margin-bottom:0
+	}
+	.bs-callout code{
+		border-radius:3px
+	}
+	.bs-callout+.bs-callout{
+		margin-top:-5px
+	}
+	.bs-callout-danger{
+		border-left-color:#d9534f
+	}
+	.bs-callout-danger h4{
+		color:#d9534f
+	}
+	.bs-callout-warning{
+		border-left-color:#f0ad4e
+	}
+	.bs-callout-warning h4{
+		color:#f0ad4e
+	}
+	.bs-callout-info{
+		border-left-color:#5bc0de
+	}
+	.bs-callout-info h4{
+		color:#5bc0de
+	}
+	
+</style>
+<script type="text/javascript">
+$(document).on("ready", function(){
+		var cod_bandejas = [];
+		var regs = [];
+		var prts = [];
+		var mensajes = [];
+		$(".pdfprotocolo").each(function(){
+			protocolo = $(this).attr("codigo");
+			docu = $(this).attr("detalles");
+			msj = $(this).attr("mensaje");
+			mensajes.push(msj);
+			prts.push(protocolo);
+			regs.push(docu);
+					
+		});
+		
+		$.ajax({
+			data: {'protocolos': prts.join(',')},
+			url: '/ajax/documentos_protocolos/',
+			type: 'get',
+			success: function(data){
+				lista = (data.html).split('\n');
+				d_docs = {};
+				for (var i = 0; i < lista.length; i++){
+					datos = lista[i].split(':');
+					clave = datos[0];
+					valor = datos[1];
+					d_docs[clave] = valor;
+				}
+				
+				for(var i=0; i< prts.length; i++){
+					codigo = prts[i];
+					html = '<br><p class = "text-danger"><strong>Documentos Adjuntos:</strong></p>';
+					html += d_docs[codigo];
+					html += '<p class = "text-danger"><strong>Mensaje:</strong></p> <p class = "text-info">'+ mensajes[i] +'</p>';
+					$("#"+regs[i]).html(html);
+				}
+			}
+		});
+		
+		$(".registro-bandeja").each(function(){
+			accion = $(this).attr("estAccion");
+			observado = $(this).attr("estObservado");
+			enviadopor = $(this).attr("enviadopor");
+			
+			if(accion === '1' && observado === '0' ){
+				$(this).css('background-color', '#e3fbe9'); 
+			}
+			if(accion === '1' && observado === '1'){
+				$(this).css('bakcground-color', '#egaaaa');
+			}
+			if(accion === '0' && observado === '0' && enviadopor === '43'){
+				$(this).css('background', '#cedbec' );
+			}
+			if(accion === '0' && observado === '0' && enviadopor !== '43'){
+				$(this).css('background', '#ffffff' );
+			}
+		});		
+})
+</script>
+{% endblock%}
+{% block mensaje_modal %}
+	Espere mientras se estan enviando los protocolos. Gracias.
+{% endblock %}
+{% block contenido %}
+
+{% include 'base/bandeja_usuarios_destino.html' %}	
+{% include 'base/bandeja_detalle_protocolo.html' %}
+{% include 'base/bandeja_detalle_referencia.html' %}
+
+<div class="col-lg-12">
+		<div class="">
+			<div class="form-group">
+				<div class="col-lg-12">
+
+					<h3><p class="text-info text-center text-large">Bandeja de Entrada</p></h3>
+					<br>
+					
+					<div class="form-group">
+						<div class = "col-lg-4"></div>
+						<div class="col-lg-6">
+						    <div class="input-group">
+						 	    <input type="text" class="form-control pull-rigth" id="texto_busqueda" placeholder = "Ingrese texto a buscar y seleccione el campo">
+						      	
+						      	<div class="input-group-btn">
+						        	<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-search"></span>
+						        	</button>
+						        	<ul class="dropdown-menu pull-right">
+								        <li><a href="#" id="buscarPorProtocolo">Protocolo</a></li>
+								        <li><a href="#" id="buscarPorProyecto">Convenio</a></li>
+								        <li><a href="#" id="buscarPorUnidadEjecutora">Unidad Ejecutora</a></li>
+								        <li><a href="#" id="buscarPorEnviado">Enviado Por</a></li>
+								        <!--<li class="divider"></li>-->
+								        <li><a href="#" id="buscarPorReferencia">Referencia</a></li>
+								        <li><a href="#" id="mostrarTodos">Mostrar Todos</a></li>
+						        	</ul>
+						      	</div><!-- /btn-group -->
+						    </div><!-- /input-group -->
+						</div><!-- /.col-lg-6 -->
+					</div>
+					<div class = "col-lg2"></div>
+
+					<br>
+					<br>
+					<form method= "POST" action="." class="form-horizontal" role="form" name="frmBandeja" id ="frmBandeja">
+						{% csrf_token %}
+						<div class="form-group">
+							<label class="col-lg-2 control-label text-right" id="log">Derivar a</label>
+							<div class="col-lg-7">
+								<input type="text" class="hide form-control" id="txtDestino" name="txtDestino">
+								<input type="text" disabled="disabled"  class="form-control" id="txtUsuario" name="txtUsuario" placeholder="Seleccione los usuarios">
+							</div>
+							<a href="#seleccionarDestino" data-toggle="modal" class="btn btn-default"><span class="glyphicon glyphicon-list-alt"></span></a>
+							<button type="submit" class="hide btn btn-danger" id="btnEnviar" name="btnEnviar" ><span class="glyphicon glyphicon-envelope"></span> Enviar</button>
+
+
+						</div>
+
+						<div class="form-group">
+							<label class="col-lg-2 control-label text-right">Mensaje</label>
+							<div class="col-lg-7">
+
+								<textarea rows="3" class="form-control" id="txtMensaje" name="txtMensaje" placeholder="Ingrese un mensaje para los destinatarios"></textarea>
+								<label>(Cantidad máxima de caracteres: 800)</label>
+							</div>
+							
+						</div>
+						<div class="form-group">
+							<div class="col-lg-2">
+								<input style="color:#d9534f;" class="select pull-right" type="checkbox" name = "chkObservar" id ="chkObservar" />
+							</div>
+							<label  class="col-lg-4 text-danger" style="color:#d9534f;font-size:18px;">Observar protocolo</label>
+							<input class="hide col-lg-1" type="text" name = "protObservado" id ="protObservado" value="0"/>
+						</div>
+
+						<div class="hide form-group">
+							<label class="col-lg-2 control-label text-right">Seleccionados</label>
+							<div class="col-lg-10">
+								<input type="text" class="form-control" id="txtProtocolo" name="txtProtocolo">
+							</div>
+							
+						</div>
+					</form>
+					
+				</div>
+			</div>
+		</div>
+		
+		<!-- Inicia la tabla -->
+
+		<div class="col-lg-12">
+		
+			
+			<div class = "panel-group col-lg-12" id = "accordion">
+				{% for data in lista %}
+					<div class = "panel panel-default" >	
+						<div class = "panel-heading col-lg-12 registro-bandeja" estAccion = "{{data.EstAccion}}" estObservado = "{{data.EstObservado}}" enviadopor="{{data.IdMUsuEnv}}">
+							
+								<div style = "width:4.5%; postion:relative; min-height:1px; padding-right:5px; padding-left:5px; float:left;">
+									<input class = "select protocolos" type = "checkbox" name = "chk[]" id = "chk" value = "{{data.IdBandeja}}" style="">
+									<a href = "/tramite/detalleprotocolo/{{data.IdMProt.IdMProt}}/" class = "mensaje" cod = "{{data.IdMProt.IdMProt}}">
+									<span class = "glyphicon glyphicon-pencil"></span>
+									</a>
+
+								</div>
+								<div class = "col-lg-1 protocolo" style = "padding-top:0.5%; color:#428bca;"><a class = "pdfprotocolo" style = "color:#843534;" href = "#dp{{data.IdBandeja}}" codigo = "{{data.IdMProt.IdMProt}}" mensaje = "{{data.MenBProt|default:"No se ha registrado ningun mensaje"}}" detalles = "pdf{{data.IdBandeja}}" data-toggle = "collapse" data-parent = "#accordion"><strong>{{data.IdMProt.IdMProt}}</strong></a></div>
+								{% if data.IdMProt.IdMProy %}
+								<div style = "width:37%; position:relative; min-height:1px; padding-right:5px; padding-left:5px; float:left;"><a codigo = "{{data.IdMProt.IdMProt}}" class = "bandeja-detalle-protocolo" href="#">{{data.IdMProt.IdMProy.IdCFMProy}} - {{data.IdMProt.IdMProy.NomMProy}}</a></div>
+								<div class = "col-lg-3">{{data.IdMProt.IdMProy.IdMCli.NomMCli}}</div>
+								{% else %}
+								<div style = "width:37%; position:relative; min-height:1px; padding-right:5px; padding-left:5px; float:left;"><a codigo = "{{data.IdMProt.IdMProt}}" class = "bandeja-detalle-protocolo" href="#">{{data.IdMProt.EmpMProt}} - {{data.IdMProt.IdMProy.NomMProy}}</a></div>
+								<div class = "col-lg-3">{{data.IdMProt.RespMProt}}</div>
+								{% endif %}
+								<div class = "col-lg-1" style = "padding-top:0.5%;">{{data.IdMUsuEnv.username}}</div>
+								<div style = "width:8%; position:relative; min-height:1px; padding-top:0.5%; padding-right:5px; padding-left:5px; float:left;">{{data.FecEnv|date:'Y/m/d'}}</div>
+								<div class = "col-lg-1 bandeja-detalle-protocolo" style = "padding-top:0.5%; color:#843534;"><a codigo = "{{data.IdProtRef}}" class = "bandeja-detalle-protocolo" href="#"><strong>{{data.IdProtRef|default:"Sin Referencia"}}</strong></a></div>
+							
+						</div>
+						<div id="dp{{data.IdBandeja}}" name ="dp{{data.IdBandeja}}" class="panel-collapse collapse">
+							<div class = "panel-body" id = "pdf{{data.IdBandeja}}" name = "pdf{{data.IdBandeja}}">
+							
+							</div>
+
+						</div>
+					</div>
+				{% endfor %}
+			</div>	
+	
+			<div class = "pull-right" style = "padding-top:0%;">
+				{% if  page_obj %}
+				<div class="pagination" style = "padding-top:0%;">
+					<ul class="pagination">
+						<li><a href="?page=1"> << </a></li>
+					{% if page_obj.has_previous %}
+						<li><a href="?page={{page_obj.previous_page_number}}"> Siguiente </a></li>
+					{% else %}
+						<li><a href="#"> Siguiente </a></li>
+					{% endif %}
+					{% if page_obj.has_next %}
+						<li><a href="?page={{page_obj.next_page_number}}"> Anterior </a></li>
+					{% else %}
+						<li><a href="#"> Anterior </a></li>
+					{% endif %}
+						<li><a href="?page={{page_obj.paginator.num_pages}}"> >> </a></li>
+
+					</ul>
+					<h4>Pagina {{page_obj.number }} de {{page_obj.paginator.num_pages}}</h4>
+				
+				</div>
+				{% endif %}
+			</div>
+	</div>
+	
+	
+	
+</div>
+
+
+
+		
+	
+
+{% endblock %}

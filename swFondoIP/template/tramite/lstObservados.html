@@ -1,0 +1,113 @@
+{% extends 'base.html' %}
+{% block js%}
+<script src="/media/js/otro.js"></script>
+<script>
+	
+</script>
+{% endblock%}
+{% block contenido %}	
+	<div class="col-lg-2">
+		<div class="col-lg-12">
+			<img src="{{MEDIA_URL}}images/imgFIP/log.jpg" alt="" class="img-rounded img-responsive">
+			<div class="list-group">
+			    <a href="#" class="list-group-item active text-center" style="font-size:17px">Tramite Documentario</a>
+			  	<a href="{% url "vista_protocolo"%}" class="list-group-item">Nuevo</a>
+			  	<a href="{% url "vista_bandeja" %}" class="list-group-item">Bandeja de Entrada</a>
+			  	<a href="{% url "vista_protocolosEnviados"%}" class="list-group-item">Enviados</a>
+			  	<a href="{% url "vista_protocolosObservados"%}" class="list-group-item" style= "color:#424242; font-weight:bold">Observados</a>
+			  	<a href="{% url "vista_localizarProtocolo"%}" class="list-group-item">Localizar Protocolo</a>
+			  	<a href="{% url "vista_buscarOCR"%}" class="list-group-item">Buscar en OCR</a>
+			</div>
+			
+									
+		</div>
+
+	</div>
+	
+	<div class="col-lg-8">
+		<p><h3><center>{{nomTabla}}</center></h3></p>
+		<br>
+		<b>Protocolos Enviados</b> : {{ lista|length }}
+		<br>
+		<!--<a href="#" mi="esto es el valor de mio" id="mio" name="mio">esto es mio</a>-->
+		<!-- BOTON PARA BUSCAR POR CAMPO -->
+		<div class="form-group pull-right">
+			<div class="col-lg-6 pull-right">
+			    <div class="input-group col-lg-10 ">
+			      <input type="text" class="form-control  pull-rigth" id="texto_busqueda">
+			      <div class="input-group-btn">
+			        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-search"></span></button>
+			        
+			      </div><!-- /btn-group -->
+			    </div><!-- /input-group -->
+			  </div><!-- /.col-lg-6 -->
+			
+
+		</div>
+		<br>
+		
+		<br><br>
+		<form method= "POST" action="." class="form-horizontal" role="form" name="frmBandeja" id ="frmBandeja">
+			{% csrf_token %}
+			
+		</form>
+
+		<br>
+		<br>
+		<table class="table table-condensed" id="tabla" name="tabla">
+			<thead>
+				<tr class="success">
+					<th><input type="checkbox" name="chkBandeja" id="chkBandeja"></th>
+					{% for item in listFields %}
+						<th ><center>{{ item }}</center></th>
+					{% endfor %}
+					
+				</tr>
+			</thead>
+					
+			{% for obj in  lista %}
+			<tbody>
+				<tr id="tr{{obj.pk}}" id="esto" name="esto">
+					<td><input class="select" type="checkbox" name = "chk[]" id ="chk" value="{{obj.pk}}"/></td>
+					<!--<td ><center>{{ obj.pk }}</center></td>-->
+					<td class="protocolo">{{obj.idMProt}}</td>
+					<td class="nombre">{{obj.proyBProt}}</td>
+					<td class="cliente">{{obj.cliBProt}}</td>
+					<td class="enviadoPor">{{obj.nomMUsuEnv}}</td>
+					<td>{{obj.fecEnv}}</td>
+					
+					<td class="referencia">{{obj.idBandejaRef}}</td>
+
+					
+					
+				</tr>
+
+			</tbody>
+			{% endfor %}
+
+		</table>
+		
+	</div>
+
+	<div class="col-lg-2">
+		<ul class="list-group">
+		  <li class="list-group-item"><center><b>Documentos del Protocolo</b><center></li>
+		  <li class="list-group-item">Documento 1</li>
+		  <li class="list-group-item">Documento 1</li>
+		  <li class="list-group-item">Documento 1</li>
+		  <li class="list-group-item">Documento 1</li>
+		</ul>
+		<br>
+		<br>
+		<p class = "text-danger text-center" href="/media/pdf/prueba.pdf" target="_blank">Ver en una ventana nueva</p>
+		<!--<a href="{{MEDIA_URL}}pdf/prueba.pdf">Da click aquí para abrir el documento</a> -->
+		<!--<embed src="documents/boceto plataforma.pdf#view=Fit" width="250" height="375"></embed>-->
+		<object type="application/pdf" data="{{MEDIA_URL}}pdf/prueba.pdf#toolbar=1&navpanes=1&scrollbar=1" width="250" height="375" id="pdf"> 
+		<param name="src" value="/media/pdf/prueba.pdf#toolbar=1&navpanes=1&scrollbar=1" /> 
+		<p style="text-align:center; width: 60%;">Adobe Reader no se encuentra o la versi&oacute;n no es compatible, utiliza el icono para ir a la p&aacute;gina de descarga <br /> 
+		<a href="http://get.adobe.com/es/reader/" onclick="this.target='_blank'">
+		<img src="reader_icon_special.jpg" alt="Descargar Adobe Reader" width="32" height="32" style="border: none;" /></a> 
+		</p> 
+		</object> 
+	</div>
+{% endblock %}

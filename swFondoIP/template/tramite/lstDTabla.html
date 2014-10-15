@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+{% block js%}
+	<script src="/media/js/fip.js"></script>
+{% endblock %}
+{% block contenido %}
+{% include 'base/frmModal.html'%}
+
+	<div class="col-lg-3"></div>
+	
+	<div class="table-responsive col-lg-6">
+		<p><h3><center>{{nomTabla}}</center></h3></p>
+		<br>
+		<b>Cantidad de registros</b> : {{ lista|length }}
+		<br><br>
+		<a href="{% url "vista_dtabla"%}" class="btn btn-success"><span class="glyphicon glyphicon-plus-sign"></span> Agregar</a>
+		<a data-toggle="modal" data-target="#mymodal" class="btn btn-danger" role="button" id="suprimir" name="suprimir"><span class="glyphicon glyphicon-remove"></span> Eliminar</a>
+		<a href="" class="btn btn-info"><span class="glyphicon glyphicon-th-list"></span> Detalle</a>
+		<a href="" class="btn btn-default"><span class="glyphicon glyphicon-edit"></span> Editar</a>
+		<a href="" class="btn btn-warning"><span class="glyphicon glyphicon-search"></span> Filtrar</a>
+		<br>
+		<br>
+		<table class="table table-condensed" id="tabla" name="tabla">
+			<thead>
+				<tr class="success">
+					<th><input type="checkbox"></th>
+					{% for item in listFields %}
+						<th ><center>{{ item }}</center></th>
+					{% endfor %}
+					
+				</tr>
+			</thead>
+					
+			{% for obj in  lista %}
+			<tbody>
+				<tr id="tr{{obj.id}}">
+					<td><input class="select" data-name="{{obj.nomDTab}}" type="checkbox" name = "chk[]" value="{{obj.pk}}"/></td>
+					<td ><center>{{ obj.pk }}</center></td>
+					<td >{{obj.nomDTabla}}</center></td>
+					<td >{{obj.abrDTabla}}</td>
+					<td >{{obj.idRefDTabla}}</td>
+					{% if obj.propDTabla == True %}
+					<td >SI</td>
+					{% else %}
+					<td >NO</td>
+					{% endif %}				
+				</tr>
+
+			</tbody>
+			{% endfor %}
+
+		</table>
+		
+	</div>
+			
+	
+
+
+
+{% endblock %}

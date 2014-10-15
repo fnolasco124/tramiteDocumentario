@@ -1,0 +1,96 @@
+<div class="modal fade" id="nuevo_usuario_modal" >
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <!--<h4 class="modal-title" id="myModalLabel">Nuevo Usuario - FIP</h4>-->
+        <p class="text-warning text-center" style="font-size:20px;">Nuevo Usuario - FIP</p>
+      </div>
+      <div class="modal-body">
+        
+          <form class="form-horizontal" id="form_nuevo_usuario" name="form_nuevo_usuario">
+          {% csrf_token %}
+            <center>
+            <div class="form-group">
+                <label class="hide col-lg-6 control-label">Usuario</label>
+                <div class="input-group col-lg-8">
+                  <span class="input-group-addon"><span class="glyphicon glyphicon-user pull-right"></span></span>
+                  {{form.username}}
+                </div>
+                
+            </div>
+            <div class="form-group">
+                <label class="hide col-lg-6 control-label">Password</label>
+                <div class="input-group col-lg-8">
+                  <span class="input-group-addon"><span class="glyphicon glyphicon-asterisk"></span></span>
+                  {{form.password}}
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="hide col-lg-6 control-label">Confirmar Password</label>
+                <div class="input-group col-lg-8">
+                  <span class="input-group-addon"><span class="glyphicon glyphicon-asterisk"></span></span>
+                  <input class="form-control" placeholder="Confirme el password" type="password" id="id_password2"/>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="hide col-lg-6 control-label">Personal</label>
+                <div class="input-group col-lg-8">
+                  <span class="input-group-addon"><span class="glyphicon glyphicon-link"></span></span>
+                  <select id ="idMPer" name="idMPer" class="form-control">
+                      <option value="">SELECCIONE PERSONAL</option>
+                      {% for p in personal %}
+                      <option value="{{p.IdMPer}}">{{p.ApePMPer}} {{p.ApeMMPer}}, {{p.NomMPer}}</option>
+                      {% endfor %}
+                  </select>
+                  
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="hide col-lg-6 control-label">Tipo Usuario</label>
+                <div class="input-group col-lg-8">
+                  <span class="input-group-addon"><span class="glyphicon glyphicon-thumbs-up"></span></span>
+                  {{form.tipoUsuario}}
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="hide col-lg-6 control-label">Cliente</label>
+                <div class="input-group col-lg-8">
+                  <span class="input-group-addon"><span class="glyphicon glyphicon-link"></span></span>
+                  <select id ="idMCli" name="idMCli" class="form-control">
+                      <option value="">SELECCIONE UNIDAD EJECUTORA</option>
+                      <option value="0" selected="selected">NO ES UNIDAD EJECUTORA</option>
+                      {% for p in clientes %}
+                      <option value="{{p.IdMCli}}">{{p.NomMCli}}</option>
+                      {% endfor %}
+                  </select>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label class="hide col-lg-6 control-label">Fecha Ingreso</label>
+                <div class="input-group col-lg-8">
+                  <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
+                  {{form.fecIngreso}}
+                </div>
+            </div>
+            
+
+          </center>
+         
+          </form>
+          <div class="hide alert alert-danger" id="mensaje_modal">
+              <button type="button" class="close" data-dismiss="alert" aria-hidden="true" id="false">&times;</button>
+              <p id="mensaje"></p>
+          </div>
+        
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-success" id="grabar_usuario" name="grabar_usuario"><span class="glyphicon glyphicon-save"></span> Guardar</button>
+        <button type="button" class="btn btn-danger" data-dismiss="modal" aria-hidden="true"><span class="glyphicon glyphicon-remove"></span> Cerrar</button>
+        
+         
+      </div>
+    </div>
+  </div>
+</div>

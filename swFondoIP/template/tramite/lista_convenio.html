@@ -1,0 +1,187 @@
+{% extends 'base3.html' %}
+{% block js%}
+	<script src="/media/js/fip.js"></script>
+	<script src="/media/js/otro.js"></script>
+	<style type="text/css">
+  	.modal{
+		width:100%; /*Toma el 100% del ancho de la página*/
+		height:100% auto; /*Toma el 100% del alto de la página*/
+		position:fixed; /*Con este código hacemos que el contenedor se mantenga en la pantalla y para que tome las dimensiones del body y no de la entrada*/
+		background-color: rgba(25, 0, 0, 0.01); /*Color de fondo, incluye opacidad del 90%*/
+		top:0; /*Position superior*/
+		left:0; /*Posición lateral*/
+		z-index:9999; /*Evitamos que algún elemento del blog sobreponga la ventana modal*/
+	}
+	.modal-dialog{
+		top:20px;
+		margin:100px auto; /*Separación arriba y centrado*/
+		font-size:12px; /*Tamaño de la fuente*/
+		widows: 4px;0%; /*Ancho del contenedor*/
+		height:100% auto;
+		width: 1400px;
+
+		/*text-align:center; /*Alineación del texto*/
+		color:#222; /*Color del texto*/
+		background:#000; /*Color de fondo*/
+	}
+	.modal-content{
+		color:#1c1c10; /*Color del texto*/
+		background:#fffffe; /*Color de fondo*/
+		height:100%;
+		border:20px;
+		font-size:15px; /*Tamaño de la fuente*/
+		border-radius: 0px;
+
+	}
+	.modal-header{
+		color:#fff; /*Color del texto*/
+		background:#383821; /*Color de fondo*/
+		text-align:center; /*Alineación del texto*/
+		font-size:16px; /*Tamaño de la fuente*/
+		height:50px;
+	}
+	.modal-header .close{
+		color:#FFF; /*Color de fondo*/
+		font-size:20px;
+		opacity: 0.2;
+	}
+	.modal-footer{
+		color:#FFF; /*Color de fondo*/
+		font-size:20px;
+		opacity: 0.9;
+		background:#333;
+		
+		
+	}
+</style>
+<script type="text/javascript">
+  $(document).on("ready", function(){
+    
+    $(".eliminar_registro").on("click", eliminar_registro);
+    function eliminar_registro(){
+        codigo = $(this).attr("codigo");
+        modelo = $(this).attr("modelo");
+        r = confirm("Desea eliminar el registro");
+        if(r === true){
+            $.ajax({
+                  data: {'codigo': codigo, 'modelo':modelo},
+                  url: '/ajax/eliminar_registro/',
+                  type: 'get',
+                  success: function(data){
+                      if (data.mensaje == "true"){
+                          //alert("Archivo adjunto eliminado.");
+                      $("#tr"+codigo).fadeOut("slow", function(){
+                          $(this).remove();
+                      });
+                    }
+                  },
+                  error: function(data){
+                      alert("Error en la comunicacion con el servidor. " + data.mensaje);
+                  }
+            });
+        }
+    };
+    
+   
+  });
+</script>
+
+{% endblock %}
+{% block contenido %}
+{% include 'base/modal_detalle_convenio.html' %}
+<div class = "col-lg-12">
+	<div class="table-responsive">
+
+		<h3><p class="text-info text-center text-large">Registro de Convenios</p></h3>
+		<br>
+		<b>Cantidad de registros</b> : {{ lista|length }}
+		<br><br>
+		<div class="form-group">
+			<a href="{% url "vista_Convenio"%}" id="agregar_usuario" class="text-success"><span class="text-success glyphicon glyphicon-plus"></span> Agregar Convenio</a>
+			<!--
+			<a data-toggle="modal" data-target="#mymodal" class="btn btn-danger" role="button" id="suprimir" name="suprimir"><span class="glyphicon glyphicon-remove"></span> Eliminar</a>
+			<a href="" class="btn btn-info"><span class="glyphicon glyphicon-th-list"></span> Detalle</a>
+			<a href="" class="btn btn-default"><span class="glyphicon glyphicon-edit"></span> Editar</a>
+			-->
+			<div class="col-lg-5 pull-right">
+			    <div class="input-group">
+			      <input type="text" class="form-control  pull-rigth" id="texto_busqueda">
+			      <div class="input-group-btn">
+			        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-search"></span></button>
+			        <ul class="dropdown-menu pull-right">
+			          	<li><a href="#" id="buscarPorProyecto">Convenio</a></li>
+			          	<li><a href="#" id="buscarPorUnidadEjecutora">Unidad Ejecutora</a></li>
+			          
+			        </ul>
+			      </div><!-- /btn-group -->
+			    </div><!-- /input-group -->
+			  </div><!-- /.col-lg-6 -->
+		</div>
+		<!-- FIN DE BOTON PARA BUSCAR POR CAMPO -->
+		<br>
+		<table class="table table-condensed" id="tabla" name="tabla" border="0">
+			<thead style="background-color: #222; color: #FAFAFA;">
+				<tr>
+					<th class="text-center" style="width:3%;"></th>
+					<th class="text-center" style="width:8%;">Código</th>
+					<th class="text-center" style="width:37%;">Nombre</th>
+					<th class="text-center" style="width:36%;">Unidad Ejecutora</th>
+					<th class="text-center" style="width:6%;">Fecha Inicio</th>
+					<th class="text-center" style="width:5%;">Fecha Fin</th>
+					<th class="text-center" style="width:5%;">Fecha Entrega</th>
+					
+				</tr>
+			</thead>
+					
+			{% for obj in  lista %}
+			<tbody style="font-size:12px" class="text-info">
+				<tr id="tr{{obj.IdMProy}}">
+					<td>
+						<!--input class="select" type="checkbox" name = "chk[]" value="{{obj.IdMProy}}"/-->
+						<a href="/tramite/colaboradores/{{obj.IdMProy}}"><span class="glyphicon glyphicon-user text-warning"></span></a>
+						<a href="/tramite/adendas/{{obj.IdMProy}}"><span class="glyphicon glyphicon-file text-warning"></span></a>
+					</td>
+					<!--<td ><center>{{ obj.pk }}</center></td>-->
+					<td>{{obj.IdCFMProy}}</td>
+					<td class="nombre"><a href="#" id="" class="datos-convenio" codigo="{{obj.IdMProy}}" cliente="{{obj.IdMCli.NomMCli}}" style="color:#585858;" title="{{obj.NomMProy}}">{{obj.NomMProy|truncatechars:80}}</a></td>
+					<td class="cliente" title="{{obj.IdMCli.NomMCli}}">{{obj.IdMCli.NomMCli|truncatechars:80}}</td>
+					<td>{{obj.FecIniRealMProy|date:'d-m-Y'}}</td>
+					<td>{{obj.FecFinRealMProy|date:'d-m-Y'}}</td>
+					<td>{{obj.FecEntRealMProy|date:'d-m-Y'}}</td>
+					
+					<td ><a href="/tramite/convenios/editar/{{obj.IdMProy}}/" id="editar_convenio" codigo="{{obj.IdMProy}}" modelo="7"><span class="text-warning glyphicon glyphicon-pencil"></span></a></td>
+					<td ><a href="#" id="eliminar_convenio" codigo="{{obj.IdMProy}}"><span class="text-danger glyphicon glyphicon-trash"></span></a></td>
+					
+				</tr>
+
+			</tbody>
+			{% endfor %}
+		</table>			
+	</div>
+
+	<div class = "pull-right" style = "padding-top:0%;">
+		{% if  page_obj %}
+		<div class="pagination" style = "padding-top:0%;">
+			<ul class="pagination">
+				<li><a href="?page=1"> << </a></li>
+			{% if page_obj.has_previous %}
+				<li><a href="?page={{page_obj.previous_page_number}}"> Anterior </a></li>
+			{% else %}
+				<li><a href="#"> Anterior </a></li>
+			{% endif %}
+			{% if page_obj.has_next %}
+				<li><a href="?page={{page_obj.next_page_number}}"> Siguiente </a></li>
+			{% else %}
+				<li><a href="#"> Siguiente </a></li>
+			{% endif %}
+				<li><a href="?page={{page_obj.paginator.num_pages}}"> >> </a></li>
+
+			</ul>
+			<h4>Pagina {{page_obj.number }} de {{page_obj.paginator.num_pages}}</h4>
+		
+		</div>
+		{% endif %}
+	</div>
+
+</div>
+{% endblock %}

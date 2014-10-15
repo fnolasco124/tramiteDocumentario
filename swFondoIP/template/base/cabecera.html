@@ -1,0 +1,92 @@
+<nav class="navbar navbar-inverse" role="navigation" style="width:auto;">
+  <!-- El logotipo y el icono que despliega el menú se agrupan
+       para mostrarlos mejor en los dispositivos móviles -->
+  <div class="navbar-header">
+    <button type="button" class="navbar-toggle" data-toggle="collapse"
+            data-target=".navbar-ex1-collapse">
+      <span class="sr-only">Desplegar navegación</span>
+      <span class="icon-bar"></span>
+      <span class="icon-bar"></span>
+      <span class="icon-bar"></span>
+    </button>
+    <!--a class="navbar-brand text-danger" href="#"><img src="/media/images/icono.jpg" height="15px" width="15px"/> Fondo Italo Peruano</a-->
+    <a class="navbar-brand text-danger" href="#"> Fondo Italo Peruano</a>
+  </div>
+ 
+  <!-- Agrupar los enlaces de navegación, los formularios y cualquier
+       otro elemento que se pueda ocultar al minimizar la barra -->
+  <div class="collapse navbar-collapse navbar-ex1-collapse">
+    
+    <!-- MENU PRINCIPAL -->
+   
+
+    <!-- MENU PARA EL LOGUEO -->
+	<ul class="nav navbar-nav">
+		<li class="dropdown">
+			<a href="#" class = "dropdown-toggle" data-toggle = "dropdown"><span class="glyphicon glyphicon-cog"></span> Administración </a>
+			<ul class = "dropdown-menu" role = "menu">
+				<li><a href = "{% url "vista_TablasMaestro" %}"><span class = "glyphicon glyphicon-list-alt"></span> Tablas Maestro </a></li>
+				<li><a href = "{% url "list-usuario" %}"><span class = "glyphicon glyphicon-user"></span> Usuarios </a></li>
+				<li><a href = "{% url "list-personal" %}"><span class = "glyphicon glyphicon-th"></span> Personal </a></li>
+				<li><a href = "{% url "list-cliente" %}"><span class = "glyphicon glyphicon-record"></span> Unidades Ejecutoras </a></li>
+				
+			</ul>
+		</li>
+		<li class = "dropdown">
+			<a href = "#" class = "dropdown-toggle" data-toggle = "dropdown"><span class="glyphicon glyphicon-send"></span> Trámite Documentario </a>
+			<ul class = "dropdown-menu" role="menu">
+				<li><a href = "{% url "crear-protocolo" %}"><span class = "glyphicon glyphicon-plus"></span> Nuevo Protocolo </a></li>
+				<li><a href = "{% url "list-proyecto" %}"><span class = "glyphicon glyphicon-file"></span> Convenios </a></li>
+				<li><a href = "{% url "list-bandeja" %}"><span class = "glyphicon glyphicon-tasks"></span> Bandeja de Entrada</a></li>
+				<li><a href = "{% url "vista_LocalizarProtocolo" %}"><span class = "glyphicon glyphicon-search"></span> Localizar </a></li>
+			</ul>
+		</li>
+		<li class = "dropdown">
+			<a href = "#" class = "dropdown-toggle" data-toggle = "dropdown"><span class = "glyphicon glyphicon-edit"></span> Supervisión </a>
+			<ul class = "dropdown-menu" role = "menu">
+				<li><a href = "{% url "vista_Convenio_Supervisor" %}"><span class = "glyphicon glyphicon-book"></span> Convenios</a></li>
+				<li><a href = "#"><span class = "glyphicon glyphicon-asterisk"></span> No activo </a></li>
+			</ul>
+		</li>
+		<li class = "dropdown">
+			<a href = "#" class = "dropdown-toggle" data-toggle = "dropdown"><span class = "glyphicon glyphicon-th"></span> Unidad Ejecutora </a>
+			<ul class = "dropdown-menu" role = "menu">
+				<li><a href = "{% url "vista_Cargar_Presupuesto" %}"><span class = "glyphicon glyphicon-upload"></span> Cargar Presupuesto</a></li>
+				<li><a href = "{% url "vista_Presupuesto" %}"><span class = "glyphicon glyphicon-usd"></span> Presupuesto </a></li>
+			</ul>
+		</li>
+	</ul>
+    <ul class="nav navbar-nav session-dropdown pull-right"> 
+      <!--<ul class="nav nav-pills pull-right">-->
+        {%if user.is_authenticated %}
+            <li class="dropdown">
+            <a class="dropdown-toggle" data-toggle="dropdown" href="#"> 
+
+              {{user.last_name|upper }}, {{user.first_name|title}} <span class="caret"></span>
+
+             </a> 
+                <ul class="dropdown-menu">
+                    <li class="navbar-active"><a href="#modificar_password_modal" id="link_modificar_password" data-toggle="modal" role="button">Modificar Password</a></li>
+                    <li class="navbar-active"><a href="{% url "Logout_View"%}">Cerrar Sesion</a></li>
+                    <!--<li class="navbar-active"><a href="#">Ver Pefil</a></li>-->
+                </ul>
+            </li>
+
+        {% else %}                           
+            <li><a href="{% url "Login_View" %}" >Inicio Sesión</a></li>
+        {% endif %}  
+              <!--Termina el submenu de logeo-->
+      </ul>
+    <!-- ## PARA EL BUSCADO
+    <form class="navbar-form navbar-left" role="search">
+      <div class="form-group">
+        <input type="text" class="form-control" placeholder="Buscar">
+      </div>
+      <button type="submit" class="btn btn-default">Enviar</button>
+    </form>
+    -->
+    
+  </div>
+</nav>
+
+

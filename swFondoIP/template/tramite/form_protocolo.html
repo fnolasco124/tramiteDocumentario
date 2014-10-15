@@ -1,0 +1,282 @@
+{% extends 'base3.html' %}
+{% block js%}
+<script src="/media/js/uitablefilter.js"></script>
+<script src="/media/js/otro.js"></script>
+<script src="/media/js/fipValidacion.js"></script>
+<script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.2/jquery-ui.min.js"></script>
+<link href="/media/css/jqueryui.css" type="text/css" rel="stylesheet"/>
+<style type="text/css">
+  	.modal{
+		width:100%; /*Toma el 100% del ancho de la página*/
+		height:100% auto; /*Toma el 100% del alto de la página*/
+		position:fixed; /*Con este código hacemos que el contenedor se mantenga en la pantalla y para que tome las dimensiones del body y no de la entrada*/
+		background-color: rgba(25, 0, 0, 0.01); /*Color de fondo, incluye opacidad del 90%*/
+		top:0; /*Position superior*/
+		left:0; /*Posición lateral*/
+		z-index:9999; /*Evitamos que algún elemento del blog sobreponga la ventana modal*/
+	}
+	.modal-dialog{
+		top:20px;
+		margin:50px auto; /*Separación arriba y centrado*/
+		font-size:12px; /*Tamaño de la fuente*/
+		widows: 4px;0%; /*Ancho del contenedor*/
+		height:100% auto;
+		width:1500px; ;
+		/*text-align:center; /*Alineación del texto*/
+		color:#222; /*Color del texto*/
+		background:#000; /*Color de fondo*/
+	}
+	.modal-content{
+		color:#1c1c10; /*Color del texto*/
+		background:#fffffe; /*Color de fondo*/
+		height:100%;
+		border:20px;
+		font-size:12px; /*Tamaño de la fuente*/
+		border-radius: 0px;
+	}
+	.modal-header{
+		color:#fff; /*Color del texto*/
+		background:#383821; /*Color de fondo*/
+		text-align:center; /*Alineación del texto*/
+		font-size:16px; /*Tamaño de la fuente*/
+		height:50px;
+	}
+	.modal-header .close{
+		color:#FFF; /*Color de fondo*/
+		font-size:20px;
+		opacity: 0.2;
+	}
+	.modal-footer{
+		color:#FFF; /*Color de fondo*/
+		font-size:20px;
+		opacity: 0.9;
+		background:#333;
+		
+		
+	}
+
+</style>
+<script type="text/javascript">
+	$(document).on("ready", function(){
+
+		listaEmpresas = [];
+		listaResponsables = [];
+		$.ajax({
+			data:{},
+			url: '/ajax/empresas_responsables/',
+			type: 'get',
+			success: function(data){
+				for(var i=0; i< data.empresas.length; i++){
+					listaEmpresas.push(data.empresas[i]);
+				}
+				for(var i=0; i< data.responsables.length; i++){
+					listaResponsables.push(data.responsables[i]);
+				}		
+			}
+		});
+		
+		$("#seleccionarProyectoProtocolo").on("keyup", ".text-filter", filtrar_tabla);
+		$("#seleccionarReferenciaProtocolo").on("keyup", ".text-filter", filtrar_tabla);
+
+		function filtrar_tabla(){
+			nombreTabla = $(this).attr("nombreTabla");
+			$.uiTableFilter($("#"+nombreTabla), this.value);
+    	};
+    	$("#empresa").autocomplete({
+    		source: listaEmpresas,
+    		select: empresaFocus
+    	});
+    	$("#responsable").autocomplete({
+    		source: listaResponsables,
+    		select: responsableFocus
+    	});
+
+    	function responsableFocus(event, ui){
+    		nombre = ui.item.value;
+    		console.log(ui.item.label);
+    	};
+    	function empresaFocus(event, ui){
+    		nombre = ui.item.value;
+    	};
+    	$(".proyecto-protocolo").bind("click",function(){
+            
+            $('#unidad_ejecutora').val($(this).attr("cliente"));
+            $('#codigo_proyecto').val($(this).attr("cod-proy"));
+            $('#nombre_proyecto').text($(this).attr("nom-proy"));
+            $('#seleccionarConvenio').modal('hide');
+            $('#empresa').addClass('hide');
+
+        });
+        $(".referencia").bind("click", function(){
+            //alert($(this).attr("nombre"));
+            $('#referencia_protocolo').val($(this).attr("codRef"));
+            
+            $('#seleccionarReferencia').modal('hide');
+        });
+
+	});
+</script>
+
+{% endblock%}
+{% block contenido %}
+	{% include 'base/modal_seleccionar_proyecto.html' %}
+	{% include 'base/modal_seleccionar_referencia.html' 	%}
+
+<div class="col-lg-12">	
+	<div class = "col-lg-1"></div>
+	<div class="container col-lg-10">
+		<div class="panel panel-default">
+		    <div class="panel-heading" style="background-color:#383821; color:#fff;">
+		        <center>Registro de Protocolo</center>
+		    </div>
+			        
+		    <div class="panel-body">
+		       
+			    <div  border="100">        
+			        <form method= "POST" class="form-horizontal" role="form" name="frmProtocolo" id ="frmProtocolo">
+			          {% csrf_token %}
+
+			          	<div class="form-group">        	
+			          		<label for="docInter" class="col-lg-2 control-label">Procedencia</label>
+			          		<div class="col-lg-4">
+			            		<select type="select" class="form-control" id="procedencia_documento"  name="procedencia_documento">
+			            			<option value = "">Seleccione</option>
+			            			{% for item in tipo_documento %}
+			            			<option value = "{{item.pk}}">{{item.NomDTab}}</option>
+			            			{% endfor %}
+			              		</select> 
+			            	</div>
+			          	</div>
+			          				          	
+			          	<div class="form-group">
+			            	<label class="col-lg-2 control-label">Proyecto</label>
+			            	<div class="col-lg-9">
+			              		<input type="text" class="form-control hide" id="codigo_proyecto"  name="codigo_proyecto">
+			              		<textarea disabled = 'disabled' class="form-control" id="nombre_proyecto" style="color:#231F20"></textarea>
+			            	</div>
+			            	<a href="#seleccionarConvenio" data-toggle="modal" class="btn btn-danger bnt-lg glyphicon glyphicon-search" id ="btnBuscaCliente" style="color:#fff;"></a>
+			          	</div>
+			          	<div class="form-group">
+			            	<label class="col-lg-2 control-label">Unidad Ejecutora</label>
+			            	<div class="col-lg-10">
+			              		<input type="text" disabled = 'disabled' class="form-control" style="color:#231F20" id="unidad_ejecutora"  name="unidad_ejecutora">
+			            	</div>
+			            	
+			          	</div>
+			          	<div class="form-group">
+			            	<label class="col-lg-2 control-label">Empresa</label>
+			            	<div class="col-lg-4 ui-widget">
+			              		<!--input type="text" class="form-control" id="nomMProt" name="nomMProt" placeholder="Descripción del protocolo"-->
+			              		{{form.EmpMProt}}
+			              		{{form.EmpMProt.errors}}
+
+			            	</div>
+			            	<label class="col-lg-2 control-label">Responsable</label>
+			            	<div class="col-lg-4">
+			              		<!--input type="text" class="form-control" id="nomMProt" name="nomMProt" placeholder="Descripción del protocolo"-->
+			              		{{form.RespMProt}}
+			              		{{form.RespMProt.errors}}
+
+			            	</div>
+			          	</div>
+			          	
+			          	<div class="form-group">
+			            	<label class="col-lg-2 control-label">N° Documento</label>
+			            	<div class="col-lg-4">
+			              		<!--input type="text" class="form-control" id="nomMProt" name="nomMProt" placeholder="Descripción del protocolo"-->
+			              		{{form.NomMProt}}
+			              		{{form.NomMProt.errors}}
+
+			            	</div>
+			          	</div>
+
+			          	<div class="form-group">
+			            	<label class="col-lg-2 control-label">Asunto</label>
+			            	<div class="col-lg-10">
+			              		<!--input type="text" class="form-control" id="descMProt" name="descMProt" placeholder="Objecto del protocolo"-->
+			              		{{form.DescMProt}}
+			              		{{form.DescMProt.errors}}
+			            	</div>
+			          	</div>
+	
+				        <div class="form-group">
+			            	<label class="col-lg-2 control-label">Fecha Recepción</label>
+			            	<div class="col-lg-2">
+			              		<!--input type="date" class="form-control" id="fecEntMProt"  name="fecEntMProt" placeholder="Fecha de nacimiento" value="{{fechaActual|date:"Y-m-d"}}"-->
+			              		{{form.FecEntMProt}}
+			              		{{form.FecEntMProt.errors}}
+			            	</div>
+
+			           		<label class="col-lg-2 control-label">Formato</label>
+			            	<div class="col-lg-2">
+			              		<select type="select" class="form-control" id="formato_entrega"  name="formato_entrega" placeholder="">
+			                     	<option value="">Seleccione</option>
+			                     	{% for item in formato_documento %}
+			                     	<option value="{{item.pk}}">{{item.NomDTab}}</option>
+			                     	{% endfor %}
+			              		</select>
+			            	</div>
+
+			            	<label class="col-lg-2 control-label">Tipo Documento</label>
+			            	<div class="col-lg-2">
+			            		<select type="select" class="form-control" id="documento_generado"  name="documento_generado" placeholder="">
+			                    	 	<option value="">Seleccione</option>
+										<!-- Servirá para seleccionar el tipo de documento -->
+			                     		{% for item in documento_generado %}
+			                     		<option value="{{item.pk}}">{{item.NomDTab}}</option>
+			                     		{% endfor %}
+			                     		
+			              		</select> 
+			            	</div>	
+
+			          	</div>
+			          
+			          	<div class="form-group">
+			            	<label class="col-lg-2 control-label">Doc. Proced./Vinculo</label>
+			            	<div class="col-lg-4">
+								<div class="input-group">
+						      	<input type="text" class="form-control" id="referencia_protocolo" name="referencia_protocolo" placeholder = "Seleccione el protocolo">
+						     	<div class="input-group-btn">
+						        	<a href="#seleccionarReferencia" data-toggle="modal" type="button" class="btn btn-default " ><span class="glyphicon glyphicon-search"></span></a>
+						        
+						     	</div><!-- /btn-group -->
+						    </div><!-- /input-group -->
+								
+							</div>
+			            	
+			            
+			            	
+
+			          	</div>
+
+			         	
+						
+			     	    <div class="form-group">
+				            <div class="col-lg-offset-5 col-lg-12">
+				              
+				              	<button type="submit" class="btn btn-success"><span class="glyphicon glyphicon-ok"></span> Guardar</button>
+				            	<a href="{% url "list-bandeja" %}" class="btn btn-danger" style="color:#fff;"><span class="glyphicon glyphicon-remove"></span> Cancelar</a>
+				             
+				            </div>
+				        </div>
+						{% if error %}
+				        <div class="form-group">
+				            <div class="col-lg-10">				              
+				              	<p type="reset" class="text-danger">{{error}}</p>
+				            </div>
+				        </div>
+						{% endif %}
+			        </form>
+
+			      </div>
+
+			      </div>
+			      <div class="panel-footer" style="background-color:#383821;">
+			      <i class="text-success text-small">Fondo Italo Peruano</i>
+			      </div>
+			    </div>	
+	</div>
+	<div class = "col-lg-1"></div>
+
+</div>
+{% endblock %}

@@ -1,0 +1,136 @@
+{% extends 'base3.html' %}
+{% block js%}
+	<script src="/media/js/fip.js"></script>
+	<script src="/media/js/otro.js"></script>
+	<style type="text/css">
+	p {line-height: 50%;}
+	.modal-dialog2{
+		top:20px;
+		margin:100px auto; /*Separación arriba y centrado*/
+		font-size:13px; /*Tamaño de la fuente*/
+		widows: 4px;0%; /*Ancho del contenedor*/
+		height:100% auto;
+		width: 800px;
+		color:#222; /*Color del texto*/
+		background:#000; /*Color de fondo*/
+	}
+</style>
+<script type="text/javascript">
+  $(document).on("ready", function(){
+    
+    $(".eliminar_registro").on("click", eliminar_detalle);
+    function eliminar_detalle(){
+        codigo = $(this).attr("codigo");
+        modelo = $(this).attr("modelo");
+        r = confirm("Desea eliminar el registro");
+        if(r === true){
+            $.ajax({
+                  data: {'codigo': codigo, 'modelo':modelo},
+                  url: '/ajax/eliminar_registro/',
+                  type: 'get',
+                  success: function(data){
+                      if (data.mensaje == "true"){
+                          //alert("Archivo adjunto eliminado.");
+                      $("#tr"+codigo).fadeOut("slow", function(){
+                          $(this).remove();
+                      });
+                    }
+                  },
+                  error: function(data){
+                      alert("Error en la comunicacion con el servidor. " + data.mensaje);
+                  }
+            });
+        }
+    };
+    
+   
+  });
+</script>
+{% endblock %}
+{% block contenido %}
+{% include 'tramite/nuevo_personal.html'%}
+<div class="col-lg-12">
+	<div class="table-responsive col-lg-12">
+		<h3><p class="text-info text-center text-large">Registro de Personal</p></h3>
+		<br>
+		<b>Cantidad de registros</b> : {{ lista|length }}
+		<br><br>
+		<div class="form-group">
+			<a href="#nuevo_personal_modal" id="nuevo_personal" class="text-success" data-toggle="modal" role="button"><span class="text-success glyphicon glyphicon-plus"></span> Agregar Personal</a>
+
+			<div class="col-lg-5 pull-right">
+			    <div class="input-group">
+			      <input type="text" class="form-control  pull-rigth" id="texto_busqueda">
+			      <div class="input-group-btn">
+			        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-search"></span></button>
+			        <ul class="dropdown-menu pull-right">
+			          <li><a href="#" id="buscarPorNombre">Apellidos y Nombre</a></li>
+			          <li><a href="#" id="buscarPorDNI" name="buscarPorNombre">Número Documento</a></li>
+			          <li><a href="#" id="mostrarTodos">Mostrar todos</a></li>
+			        </ul>
+			      </div><!-- /btn-group -->
+			    </div><!-- /input-group -->
+			  </div><!-- /.col-lg-6 -->
+		</div>
+		<!-- FIN DE BOTON PARA BUSCAR POR CAMPO -->
+		<br>
+		<table class="table table-condensed" id="tabla" name="tabla"  border="0">
+			<thead style="background-color: #222; color: #FAFAFA;">
+				<tr>
+					<th class="text-center" style="width:12%;">Código</th>
+					<th class="text-center" style="width:18%;">Apellidos</th>
+					<th class="text-center" style="width:18%;">Nombres</th>
+					<th class="text-center" style="width:15%;">Fec. Nac.</th>
+					<th class="text-center" style="width:8%;">Nro Doc.</th>
+					<th class="text-center" style="width:8%;">Telfono</th>
+					<th class="text-center" style="width:12%;">Email</th>
+					
+				</tr>
+			</thead>
+			<tbody>		
+			{% for obj in  lista %}
+				<tr id="tr{{obj.pk}}" class="text-info">
+					<td class="text-center">{{ obj.IdMPer }}</td>
+					<td class="nombre">{{obj.ApePMPer}} {{obj.ApeMMPer}}</center></td>
+					<td class="nombre">{{obj.NomMPer}}</td>
+					<td >{{obj.FechNacMPer|date:"d-M-Y"}}</td>
+					<td >{{obj.NDocMPer}}</td>
+					<td >{{obj.Tel1MPer}}</td>
+					<td >{{obj.Email1MPer|lower}}</td>
+					<td ><a href="#" class="editar_registro" codigo="{{obj.IdMPer}}" modelo= "4"><span class="text-warning glyphicon glyphicon-pencil"></span></a></td>
+					<td ><a href="#" class="eliminar_registro" codigo="{{obj.IdMPer}}" modelo= "4"><span class="text-danger glyphicon glyphicon-trash"></span></a></td>
+				</tr>
+			{% endfor %}
+			</tbody>
+		</table>
+		<div class="hide alert alert-warning" id="div_mensaje">
+			  <button type="button" class="close" data-dismiss="alert" aria-hidden="true" id="false">&times;</button>
+			  <p id="mensaje"></p>
+		</div>
+		
+	</div>
+	<div class = "pull-right" style = "padding-top:0%;">
+		{% if  page_obj %}
+		<div class="pagination" style = "padding-top:0%;">
+			<ul class="pagination">
+				<li><a href="?page=1"> << </a></li>
+			{% if page_obj.has_previous %}
+				<li><a href="?page={{page_obj.previous_page_number}}"> Anterior </a></li>
+			{% else %}
+				<li><a href="#"> Anterior </a></li>
+			{% endif %}
+			{% if page_obj.has_next %}
+				<li><a href="?page={{page_obj.next_page_number}}"> Siguiente </a></li>
+			{% else %}
+				<li><a href="#"> Siguiente </a></li>
+			{% endif %}
+				<li><a href="?page={{page_obj.paginator.num_pages}}"> >> </a></li>
+
+			</ul>
+			<h4>Pagina {{page_obj.number }} de {{page_obj.paginator.num_pages}}</h4>
+		
+		</div>
+		{% endif %}
+	</div>			
+
+{% endblock %}

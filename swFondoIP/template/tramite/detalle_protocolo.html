@@ -1,0 +1,197 @@
+{% extends 'base3.html' %}
+{% block js%}
+<script src="/media/js/fipValidacion.js"></script>
+<script src="/media/js/jquery.Print.js"></script>
+<script type="text/javascript">
+  $(document).on("ready", function(){
+    var codigo = $("#codigo_protocolo").val();
+    
+    $.ajax({
+          data : {'codigo': codigo,},
+          url : '/ajax/detalle_protocolo/',
+          type: 'get',
+
+          success: function(data){
+              $("#detalle_impresion_protocolo").html(data.html);
+          } 
+    });
+    
+    $("#btn_Imprimir").on("click", function(){
+          $("#printArea").printArea();
+          $("#impresionProtocolo").modal('hide');
+    });
+    $("#btn_Protocolo").on("click", function(){
+          $("#impresionProtocolo").modal('show');
+    });
+    $("#btnAgregarDetalle").click(cargar_modal);
+    
+    function cargar_modal(){
+      if ($(".error").is(":hidden")){
+        $("#cargador").show();
+      }
+    };
+	 
+    $(".eliminar_registro").on("click", eliminar_detalle);
+    function eliminar_detalle(){
+        codigo = $(this).attr("codigo");
+        modelo = $(this).attr("modelo");
+        r = confirm("Desea elminar el registro");
+        if(r === true){
+            $.ajax({
+                  data: {'codigo': codigo, 'modelo':modelo},
+                  url: '/ajax/eliminar_registro/',
+                  type: 'get',
+                  success: function(data){
+                      if (data.mensaje == true){
+                          //alert("Archivo adjunto eliminado.");
+                      $("#tr"+codigo).fadeOut("slow", function(){
+                          $(this).remove();
+                      });
+                    }
+                  },
+                  error: function(data){
+                      alert("Error en la comunicacion con el servidor.");
+                  }
+            });
+        }
+    };
+    
+   
+  });
+</script>
+
+{% endblock %}
+{% block mensaje_modal %}
+    Espere mientras se agrega un registro. Gracias.
+{% endblock %}
+{% block contenido %}
+{% include 'base/modal_impresion_protocolo.html'%}
+	
+	<div class="col-lg-2">
+		
+	</div>
+	
+	<div class="container col-lg-8">
+		<div class="panel panel-default">
+		    <div class="panel-heading" style="background-color:#505863; color:#fff; font-family: Verdana; font-size:15px;">
+		        <center>Detalles del Protocolo</center>
+		    </div>
+			        
+		    <div class="panel-body">
+		
+		
+		<form method= "POST"  class="form-horizontal" role="form" name="frmDetalleProtocolo" id ="frmDetalleProtocolo" enctype="multipart/form-data">
+                {%csrf_token%}
+                  <div class="form-group">
+                    <label class="col-lg-2 control-label">Protocolo</label>
+                    <div class="col-lg-4">
+                      <input type="text" class="form-control hide" style = "color:#4A6D81" id="codigo_protocolo"  name="codigo_protocolo" value="{{codigo_protocolo}}">
+                      <label type="text" class="form-control" style = "color:#4A6D81" >{{codigo_protocolo}}</label>
+                    </div>  
+                  </div>
+
+                  <div class="form-group">
+                    <label class="col-lg-2 control-label">Proyecto</label>
+                    <div class="col-lg-10">
+                      <textarea disabled = "disabled" rows= "3" class="form-control" id = "nombre_proyecto"  style="color:#4A6D81">{{nombre_proyecto}}</textarea>
+                    </div>  
+                  </div>
+                  <div class="form-group">
+                    <label class="col-lg-2 control-label">Unidad Ejecutora</label>
+                    <div class="col-lg-10">
+                      <label class="form-control" id = "cliente_proyecto" style="color:#4A6D81">{{cliente_proyecto}}</label>
+                    </div>
+                  </div>
+
+                  <div class="form-group">
+                    <label class="col-lg-2 control-label">Asunto</label>
+                    <div class="col-lg-10">
+                    	{{form.NomDProt}}
+                      {{form.NomDProt.errors}}
+                    </div>
+                    
+                  </div>
+                  <div class="form-group">
+                    <label class="col-lg-2 control-label">Formato</label>
+                    <div class="col-lg-4">
+                    	<select type="select" class="form-control" id= "formato_detalle"  name= "formato_detalle">
+                              <option value="">(Seleccione)</option>
+                              {% for item in formatos %}                
+                              <option value="{{item.pk}}">{{item.NomDTab}}</option>
+                              {% endfor %}
+                              
+                      </select>
+                    </div>
+
+                  </div>
+                  <div class="form-group">
+                    <label class="col-lg-2 control-label">Ubicación Física</label>
+                    <div class="col-lg-4">
+                        <select type="select" class="form-control" id= "ubicacion_detalle"  name= "ubicacion_detalle">
+                              <option value="">(Seleccione)</option>
+                              {% for item in usuarios_archivo %}
+                              <option value="{{item.pk}}">{{item.ApePMPer}} {{item.ApeMMPer}}, {{item.NomMPer|capfirst}}</option>
+                              {% endfor %}
+                              
+                                                                  
+                        </select>
+                    </div>
+                                        
+                  </div>
+                  
+                  <div class="form-group">
+                    <label class="col-lg-2 control-label">PDF</label>
+                    <div class="col-lg-10">
+                    	{{form.RutaPdfDProt}}
+                      {{form.RutaPdfDProt.errors}}
+                    </div>                    
+                  </div>
+                  
+                  <div class="form-group">
+                    <div class="col-lg-offset-4 col-lg-12">
+                      <button type="button" class="btn btn-default" id="btn_Protocolo" name="btn_Protocolo"><span class="glyphicon glyphicon-print"></span> Imprimir</button>
+                      <button type="submit" class="btn btn-success" id="btnAgregarDetalle" name="btnAgregarDetalle"><span class="glyphicon glyphicon-plus"></span> Agregar</button>
+                      <a href="{% url "list-bandeja" %}" class="btn btn-danger" data-dismiss="modal" id="btnCancelarDetalle" name="btnCancelarDetalle" style="color:#fff; "><span class="glyphicon glyphicon-ok"></span> Finalizar</a>
+                     
+                    </div>
+                </div>
+          </form>
+          	<br>
+    			<div class="form-group">
+              <div class="col-lg-offset-1 col-lg-10">
+                 	<table class="table table-condensed" id="tabla" name="tabla">
+              				<thead style="background-color:#383821; color:#fff;">
+              						<tr>
+              						<th><input type="checkbox"></th>
+              						<th ><center>Código</center></th>
+                          <th ><center>Descripción</center></th>
+                          <th ><center>Archivo adjunto</center></th>
+              						
+										<th></th>
+            							</tr>
+             							</thead>
+             							{% for obj in  lista_detalle %}
+               							<tbody>
+              								<tr id="tr{{obj.IdDProt}}">
+              									<td><input class="select" data-name="{{obj.NomDTab}}" type="checkbox" name = "chk[]" value="{{obj.IdDProt}}"/></td>
+              									<td><center>{{ obj.IdDProt }}</center></td>
+              									<td>{{obj.NomDProt}}</td>
+              									<!--<td >{{obj.idTipDocDProt}}</td>-->
+              									<td><a href="#" target = "_blank" ruta="{{MEDIA_URL}}{{rutaPdfDProt}}">{{obj.RutaPdfDProt}}</a></td>
+												<td><a href= "#" class = "eliminar_registro" codigo="{{obj.IdDProt}}" modelo = "9"><span class = "text-danger glyphicon glyphicon-trash"></span></a></td>
+              								</tr>
+
+              							</tbody>
+              							{% endfor %}
+
+    						  </table>                                        
+              </div>
+        </div>
+		</div>
+  </div>
+	</div>
+
+	<div class="col-lg-2">
+		
+	</div>
+{% endblock %}

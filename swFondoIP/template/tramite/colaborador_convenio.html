@@ -1,0 +1,225 @@
+{% extends 'base3.html' %}
+{% block js%}
+<script src="/media/js/fipValidacion.js"></script>
+<!--script src="/media/js/otro.js"></script-->
+<script type="text/javascript">
+  $(document).on("ready", function(){
+    
+    $("#agregar_colaborador").click(cargar_modal);
+    
+    function cargar_modal(){
+      if ($(".error").is(":hidden")){
+        $("#cargador").show();
+      }
+    };
+     
+    $(".eliminar_registro").on("click", eliminar_detalle);
+    function eliminar_detalle(){
+        codigo = $(this).attr("codigo");
+        modelo = $(this).attr("modelo");
+        r = confirm("Desea eliminar el registro");
+        if(r === true){
+            $.ajax({
+                  data: {'codigo': codigo, 'modelo':modelo},
+                  url: '/ajax/eliminar_registro/',
+                  type: 'get',
+                  success: function(data){
+                      if (data.mensaje == "true"){
+                          //alert("Archivo adjunto eliminado.");
+                      $("#tr"+codigo).fadeOut("slow", function(){
+                          $(this).remove();
+                      });
+                    }
+                  },
+                  error: function(data){
+                      alert("Error en la comunicacion con el servidor. " + data.mensaje);
+                  }
+            });
+        }
+    };
+    $("#colaborador_convenio").on("change",function(){
+            var codigo = $(this).val();
+            //alert(codPer);
+            
+            $.ajax({
+                data : {'codigo': codigo},
+                url : '/ajax/personal_tipo/',
+                type: 'get',
+                success: function(data){
+                    //html = '<option value="">Seleccione...</option>';
+                    if(data.status== true){
+                        $("#personalExterno").addClass("hide");
+                    }
+                    else{   
+                        $("#personalExterno").removeClass("hide");
+                        $("#externo").val("1");
+                    }
+                }
+            });
+
+        });
+    
+   
+  });
+</script>
+{% endblock %}
+{% block contenido %}
+    
+    <div class="col-lg-2">
+        
+    </div>
+    
+    <div class="container col-lg-8">
+        <div class="panel panel-default">
+            <div class="panel-heading" style="background-color:#383821; color:#fff;">
+                <center><b>Colaboradores asignados</b></center>
+            </div>
+                    
+            <div class="panel-body">
+        
+        
+        <form method= "POST" action="" class="form-horizontal" role="form" name="frmColaborador" id ="frmColaborador" enctype="multipart/form-data">
+                {%csrf_token%}
+                <div class="form-group">
+                    <label class="col-lg-2 control-label">Nº del Convenio</label>
+                    <div class="col-lg-4">
+                      <input type="text" class="hide form-control" id="codigo_proyecto"  name="codigo_proyecto" value="{{instance.IdMProy}}">
+                      <label class="form-control" style="color:#4A6D81"> {{instance.IdCFMProy}}</label>
+                    </div>  
+                </div>
+
+                <div class="form-group">
+                    <label class="col-lg-2 control-label">Nombre del Proyecto</label>
+                    <div class="col-lg-10">
+                      <label class="form-control" style="color:#4A6D81">{{instance.NomMProy}}</label>
+                    </div>  
+                </div>
+
+                <div class="form-group">
+                    <label class="col-lg-2 control-label">Unidad Ejecutora</label>
+                    <div class="col-lg-10">
+                      <label class="form-control" style="color:#4A6D81">{{instance.IdMCli.NomMCli}}</label>
+                    </div>
+                </div>
+
+                
+
+                <div class="form-group">
+                    <label class="col-lg-2 control-label">Responsable</label>
+                    <div class="col-lg-7">
+                        <select type="select" class="form-control" id="colaborador_convenio"  name="colaborador_convenio" placeholder="">
+                              <option value="">Seleccione</option>
+                              {% for item in personal %}
+                              <option value="{{item.IdMPer}}">{{item.ApePMPer}} {{item.ApeMMPer}}, {{item.NomMPer}}</option>
+                              {% endfor %}
+                      </select>
+                      <input type="text" class = "hide"     id="externo" name="externo" value = "0">
+                    </div>
+                    
+                </div>
+
+                <div class="form-group">
+                    <label class="col-lg-2 control-label">Cargo</label>
+                    <div class="col-lg-4">
+                        <select type="select" class="form-control" id="cargo"  name="cargo" placeholder="">
+                              <option value="">Seleccione</option>
+                              <option value="0">Supervisor Financiero</option>
+                              <option value="1">Administrador</option>                   
+                              <option value="2">Consultor</option>                   
+                      </select>
+                    </div>
+
+                    
+                    
+                </div>
+                
+                <div class="hide" id="personalExterno">
+                     <div class="form-group">
+                        <label class="col-lg-2 control-label">Fecha Inicio</label>
+                        <div class="col-lg-4">
+                            {{form.FecIniMCol}}
+                        </div>
+                        <label class="col-lg-2 control-label">Fecha Fin</label>
+                        <div class="col-lg-4">
+                            {{form.FecFinMCol}}
+                          
+                            
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-lg-2 control-label">Monto Mensual</label>
+                        <div class="col-lg-4">
+                            {{form.MontoMenMCol}}
+                        </div>
+                        <label class="col-lg-2 control-label">Monto Total</label>
+                        <div class="col-lg-4">
+                            {{form.MontoMCol}}
+                        </div>  
+                    </div>
+                      
+                    <div class="form-group">
+                        <label class="col-lg-2 control-label">PDF</label>
+                        <div class="col-lg-10">
+                            {{form.RutaPDFMCol}}
+                        </div>                    
+                    </div>
+                    
+                </div>
+               
+                  
+                  <div class="form-group">
+                    <div class="col-lg-offset-5 col-lg-12">
+                      
+                      <button type="submit" class="btn btn-success" id="agregar_colaborador" name="agregar_colaborador"><span class="glyphicon glyphicon-plus"></span> Agregar</button>
+                      <a href="{% url "list-proyecto" %}" class="btn btn-danger" data-dismiss="modal" id="btnCancelar" name="btnCancelar" style="color:#fff;"><span class="glyphicon glyphicon-ok"></span> Finalizar</a>
+                     
+                    </div>
+                </div>
+          </form>
+            <br>
+                <div class="form-group">
+              <div class="">
+                    <table class="table table-condensed" id="tabla" name="tabla">
+                        <thead style="background-color: #222; color: #FAFAFA">
+                            <tr>
+                                <th></th>
+                                <th><center>Apellidos y Nombres</center></th>
+                                <th><center>Fecha Inicio</center></th>
+                                <th><center>Fecha Fin</center></th>
+                                <th><center>Monto</center></th>
+                                <th><center>PDF</center></th>
+                                                    
+                                        
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for item in colaboradores %}
+                                <tr id="tr{{item.pk}}" class="text-info">
+                                    <td><input class="select" type="checkbox" name = "chk[]" value="{{item.pk}}"/></td>
+                                    <td ><center>{{ item.IdMPer.ApePMPer}} {{item.IdMPer.ApeMMPer}}, {{item.IdMPer.NomMPer}}</center></td>
+                                    <td >{{item.FecIniMCol|date:'Y-M-d'}}</td>
+                                    <td >{{item.FecFinMCol|date:'Y-M-d'}}</td>
+                                    <td >{{item.MontoMCol}}</td>
+                                    <td ><a target ="_blank" href="{{MEDIA_URL}}{{item.RutaPDFMCol}}">{{item.RutaPDFMCol|cut:'colaborador'}}</a></td>
+                                    <td>
+                                        <a href= "#" class = "eliminar_registro" codigo="{{item.pk}}" modelo = "5"><span class = "text-danger glyphicon glyphicon-trash"></span></a>
+                                    </td>
+                                                                                                                             
+                                   </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+
+
+                                                         
+              </div>
+        </div>
+        </div>
+  </div>
+    </div>
+
+    <div class="col-lg-2">
+        
+    </div>
+{% endblock %}

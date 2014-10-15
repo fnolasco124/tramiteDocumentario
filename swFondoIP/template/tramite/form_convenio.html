@@ -1,0 +1,302 @@
+{% extends "base3.html"%}
+{% block js%}
+<script src="/media/js/fipValidacion.js"></script>
+ <script src="/media/js/bootstrap-collapse.js"></script>
+ <script src="/media/js/otro.js"></script>
+ <style type="text/css">
+  .modal{
+    width:100%; /*Toma el 100% del ancho de la página*/
+    height:100% auto; /*Toma el 100% del alto de la página*/
+    position:fixed; /*Con este código hacemos que el contenedor se mantenga en la pantalla y para que tome las dimensiones del body y no de la entrada*/
+    background-color: rgba(25, 0, 0, 0.01); /*Color de fondo, incluye opacidad del 90%*/
+    top:0; /*Position superior*/
+    left:0; /*Posición lateral*/
+    z-index:9999; /*Evitamos que algún elemento del blog sobreponga la ventana modal*/
+  }
+  .modal-dialog{
+    top:20px;
+    margin:100px auto; /*Separación arriba y centrado*/
+    font-size:12px; /*Tamaño de la fuente*/
+    widows: 4px;0%; /*Ancho del contenedor*/
+    height:100% auto;
+    width: 1200px;
+    /*text-align:center; /*Alineación del texto*/
+    color:#222; /*Color del texto*/
+    background:#000; /*Color de fondo*/
+  }
+  .modal-dialog2{
+    top:20px;
+    margin:100px auto; /*Separación arriba y centrado*/
+    font-size:13px; /*Tamaño de la fuente*/
+    widows: 4px;0%; /*Ancho del contenedor*/
+    height:100% auto;
+    width: 1000px;
+    color:#222; /*Color del texto*/
+    background:#000; /*Color de fondo*/
+  }
+  .modal-content{
+    color:#1c1c10; /*Color del texto*/
+    background:#fffffe; /*Color de fondo*/
+    height:100%;
+    border:20px;
+    font-size:13px; /*Tamaño de la fuente*/
+    border-radius: 0px;
+  }
+  .modal-header{
+    color:#fff; /*Color del texto*/
+    background:#383821; /*Color de fondo*/
+    text-align:center; /*Alineación del texto*/
+    font-size:16px; /*Tamaño de la fuente*/
+    height:50px;
+  }
+  .modal-header .close{
+    color:#FFF; /*Color de fondo*/
+    font-size:20px;
+    opacity: 0.2;
+  }
+  .modal-footer{
+    color:#FFF; /*Color de fondo*/
+    font-size:20px;
+    opacity: 0.9;
+    background:#333;
+    
+    
+  }
+  
+</style>
+<script type = "text/javascript">
+  $(document).on("ready", function(){
+    /*
+    $.ajax({
+      data: {'datos':'bancos',},
+      url: '/ajax/bancos_sectores/',
+      type: 'get',
+      success: function(data){
+         $("#id_IdBanco").html(data.bancos);
+        $("#id_IdSector").html(data.sectores);
+        
+      },
+      error: function(data){
+        $("#id_IdBanco").html('<option value="0"> Default</option>');
+        $("#id_IdSector").html('<option value="0"> Default</option>');
+        alert('No se pudo recuperar informacion de bancos y sectores');
+      }
+    });
+    */
+    
+    codigo = $("#codigo_autogenerado").text();
+    cliente_nombre = $("#cliente_nombre").text();
+    cliente_codigo = $("#cliente_codigo").text();
+    if (codigo != ""){
+    $("#id_IdCFMProy").val(codigo);}
+    if(cliente_nombre != "" & cliente_codigo != ""){
+      $("#IdMCli").val(cliente_codigo);
+      $("#NomMCli").val(cliente_nombre);
+
+    }
+  })
+</script>
+ {% endblock %}
+{% block contenido %}
+{% include 'base/frmModalSelecCliente.html'%}
+<!--
+{% include 'base/frmModAgregarColaborador.html'%}
+{% include 'base/frmModAgregarModificatoria.html'%}
+-->
+<!-- MENU DEL LADO DERECHO -->
+<div class = "col-lg-2"></div>
+<div class = "col-lg-7">
+<label id = "cliente_codigo" class = "hide">{{cliente_codigo}}</label>
+<label id = "cliente_nombre" class = "hide">{{cliente_nombre}}</label>
+<form method="POST" class="form-horizontal" role="form" name="frmConvenio" id = "frmConvenio" enctype="multipart/form-data">
+{% csrf_token %}
+<div class="form-group">
+    <div class="container">
+        <div class="panel panel-default">
+            <div class="panel-heading" style="background-color:#383821; color:#fff;">
+                <center>Datos del Convenio</center>
+            </div>
+            <div class="panel-body">
+                           
+                    <div class="form-group">
+                        <label id = "codigo_autogenerado" class = "hide">{{codigo_proyecto}}</label>
+                        {{form.IdMProy}}
+                        <label class="col-lg-2  control-label">Codigo</label>
+                        <div class="col-lg-4">
+                          {{form.IdCFMProy}}
+                          {{form.IdCFMProy.errors}}
+                        </div>
+                        
+                        <label class="col-lg-2 control-label">Convocatoria</label>
+                        <div class="col-lg-4">
+                          {{form.IdConv}}
+                          {{form.IdConv.errors}}
+                        </div>
+                    </div>
+                      
+                    <div class="form-group">
+                        <label class="col-lg-2 control-label">Unidad Ejecutora</label>
+                        <div class="col-lg-9">
+                          <input type="text" class="form-control hide" name="IdMCli" id="IdMCli">
+                          <input type="text" class="form-control" disabled="disabled" name="NomMCli" id="NomMCli" placeholder = "Nombre de la Unidad Ejecutora"> 
+                        </div> 
+                        <a href="#seleccionarUnidadEjecutora" data-toggle="modal" class="btn btn-danger bnt-lg glyphicon glyphicon-search" style="color:#fff;"></a>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-lg-2 control-label">Nombre del Proyecto</label>
+                        <div class="col-lg-10">
+                          {{form.NomMProy}}
+                          {{form.NomMProy.errors}}
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-lg-2 control-label">Sector</label>
+                        <div class="col-lg-4">
+                          {{form.IdSector}}
+                          {{form.IdSector.errors}}
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-lg-2 control-label">Banco</label>
+                        <div class="col-lg-3">
+                          {{form.IdBanco}}
+                          {{form.IdBanco.errors}}
+                        </div>
+
+                        <label class="col-lg-3 control-label">Cod. Cuenta Interbancaria</label>
+                        <div class="col-lg-4">
+                          {{form.NumCtaInterMProy}}
+                          {{form.NumCtaInterMProy.errors}}
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-lg-2 control-label">PDF Proyecto</label>
+                        <div class="col-lg-10">
+                          {{form.RutaPDFMProy}}
+                          {{form.RutaPDFMProy.errors}}
+                            <!--<input type="file" class="form-control" id="rutaPDFDProt"  name="rutaPDFDProt" placeholder="Buscar la Unidad Ejecutora">-->
+                        </div>
+                                            
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-lg-2 control-label">PDF Convenio</label>
+                        <div class="col-lg-10">
+                          {{form.RutaPDFConvMProy}}
+                          {{form.RutaPDFConvMProy.errors}}
+                          
+                            <!--<input type="file" class="form-control" id="rutaOCRDProt"  name="rutaOCRDProt" placeholder="Buscar la Unidad Ejecutora">-->
+                        </div>            
+                    </div>
+
+                    <div class="form-group">
+                      <label class="col-lg-2 control-label">PDF Acta de Cierre</label>
+                        <div class="col-lg-4">
+                          {{form.RutaPDFACMProy}}
+                          {{form.RutaPDFACMProy.errors}}
+                            <!--<input type="file" class="form-control" id="rutaPDFDProt"  name="rutaPDFDProt" placeholder="Buscar la Unidad Ejecutora">-->
+                        </div>    
+                       
+
+                        <label class="col-lg-2 control-label">Fecha Firma</label>
+                        <div class="col-lg-3 pull-right">
+                          {{form.FecIngMProy}}
+                          {{form.FecIngMProy.errors}}
+                        </div>
+                    </div>
+                      
+            </div>
+        </div>
+
+        
+
+        <div class="panel panel-default">
+            <div class="panel-heading" style="background-color:#383821; color:#fff;">
+                <center>Financiamiento</center>
+            </div>
+            <div class="panel-body">
+                
+                    <div class="form-group">
+                      
+                      <label class="col-lg-2 control-label"><center></center></label>
+                      <label class="hide col-lg-2 control-label"><center>%</center></label>
+                      <label class="col-lg-2 control-label"><center>FIP</center></label>
+                      <label class="col-lg-2 control-label"><center>Un. Ejec. </center></label>
+                      <label class="col-lg-2 control-label"><center>Asoc. </center></label>
+                      <label class="col-lg-2 control-label"><center>TOTAL</center></label>
+                    </div>
+                  
+                    <div class="form-group">
+                      
+                      <label class="col-lg-2 control-label">REAL</label>
+                      <div class="hide col-lg-2">
+                        <input type="text" class=" form-control text-right" disabled="disabled" name="" id="" placeholder = "0.0">
+                      </div>
+                      <div class="col-lg-2">
+                        {{form.MontInvFipMProy}}
+                        {{form.MontInvFipMProy.errors}}
+                      </div>
+                      <div class="col-lg-2">
+                        {{form.MontInvCliMProy}}
+                        {{form.MontInvCliMProy.errors}}
+                      </div>
+                      <div class="col-lg-2">
+                        <input type="text" class="form-control text-right montoReal" name="montTInvRealOtrMProy" id="montTInvRealOtrMProy" value = "0">
+
+                      </div>
+                      <div class="col-lg-2">
+                        {{form.MontTotMProy}}
+                        {{form.MontTotMProy.errors}}
+                      </div>
+                    </div>
+          
+            </div>
+        </div>
+
+        <div class="panel panel-default">
+            <div class="panel-heading" style="background-color:#383821; color:#fff;">
+                <center>Cronograma</center>
+            </div>
+            <div class="panel-body">
+
+                    <div class="form-group">
+                      
+                      <label class="col-lg-2 control-label"></label>
+                      <label class="col-lg-3 control-label"><center>Inicio</center></label>
+                      <label class="col-lg-3 control-label"><center>Fin</center></label>
+                      <label class="hide col-lg-3 control-label"><center>Entrega</center></label>
+                    </div>
+                  
+                    <div class="form-group">
+                      <label class="col-lg-2 control-label">Fecha</label>
+                      <div class="col-lg-3">
+                        {{form.FecIniMProy}}
+                        {{form.FecIniMProy.errors}}
+                      </div>
+                      <div class="col-lg-3">
+                        {{form.FecFinMProy}}
+                        {{form.FecFinMProy.errors}}
+                      </div>
+                      
+                    </div>
+                  
+            </div>
+        </div>
+        <div class="panel panel-default">
+            <div class="panel-body text-center">
+                <button type="submit" class="btn btn-success" id="btnGrabar"><span class="glyphicon glyphicon-ok"></span> Guardar</button>
+                <a href="{% url "list-proyecto"%}" class="btn btn-danger" id="btnCancelar" style="color:#fff;"><span class="glyphicon glyphicon-remove"></span> Cancelar</a>
+            </div>
+        </div>
+    </div>    
+</div>
+
+</form>
+</div>
+
+
+{% endblock %}

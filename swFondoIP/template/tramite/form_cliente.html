@@ -1,0 +1,159 @@
+{% extends 'base3.html' %}
+{% block js%}
+<script src="/media/js/fipValidacion.js"></script>
+<script src="/media/js/otro.js"></script>
+{% endblock %}
+{% block contenido %}
+<div class="col-lg-2">
+	
+</div>
+<div class="col-lg-8">
+	
+		<div class="panel panel-primary">
+			<div class="panel-heading" style="background-color:#383821; color:#fff;">
+				<center><b>Registro de Unidades Ejecutoras</b></center>
+			</div>
+			<div class="panel-body">
+				<div border="100">
+					<form method="POST" action="." class="form-horizontal" role="form" name="frmUnidadEjecutora" id="frmUnidadEjecutora">
+						{% csrf_token %}
+						<div class="form-group">
+							<label class="col-lg-2 control-label">Nombre completo</label>
+							<div class="col-lg-10">
+								<input type="text" class="form-control" id="nomMCli" name="nomMCli" placeholder = "Nombre completo de la Unidad Ejecutora">
+							</div>
+						</div>
+						
+						<div class="form-group">
+							<label class="col-lg-2 control-label">Tipo</label>
+							<div class="col-lg-4">
+								<select id="idTipMCli" name="idTipMCli" class="form-control">
+									<option value = "">Seleccione...</option>
+									{% for p in lstTipo %}
+									<option value="{{p.pk}}">{{p.NomDTab}}</option>
+									{% endfor %}
+								</select>
+							</div>
+							<label class="col-lg-2 control-label">Tipo Inst.</label>
+							<div class="col-lg-4">
+								<select id="idTipInstMCli" name="idTipInstMCli" class="form-control">
+									<option value = "">Seleccione...</option>
+									<option value = "0">Institucion 1</option>
+									<option value ="1">Institucion 1</option>									
+								</select>
+							</div>
+						</div>
+						
+						<div class="form-group">
+							<label class="col-lg-2 control-label">Pais</label>
+							<div class="col-lg-4">
+								<select id="idPaisMCli" name="idPaisMCli" class="form-control">
+									<option value="">Seleccione...</option>
+									{% for p in lstPais %}
+									<option value="{{p.pk}}">{{p.NomDTab}}</option>
+									{% endfor %}
+								</select>
+							</div>
+							<label class="col-lg-2 control-label">Region</label>
+							<div class="col-lg-4">
+								<select id="idRegMCli" name="idRegMCli" class="form-control">
+									<option value="">Seleccione...</option>
+									{% for p in lstRegion %}
+									<option value="{{p.pk}}">{{p.NomDTab}}</option>
+									{% endfor %}								
+								</select>
+							</div>
+						</div>
+						
+						<div class="form-group">
+							<label class="col-lg-2 control-label">Departamento</label>
+							<div class="col-lg-4">
+								<select id="idDepMCli" name="idDepMCli" class="form-control">
+									
+									
+								</select>
+							</div>
+							<label class="col-lg-2 control-label">Provincia</label>
+							<div class="col-lg-4">
+								<select id="idProvMCli" name="idProvMCli" class="form-control">
+									<option value="">Seleccione...</option>
+															
+								</select>
+							</div>
+						</div>
+						
+						<div class="form-group">
+							<label class="col-lg-2 control-label">Distrito</label>
+							<div class="col-lg-4">
+								<select id="idDistMCli" name="idDistMCli" class="form-control">
+									
+								</select>
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="col-lg-2 control-label">Dirección</label>
+							<div class="col-lg-10">
+								<input type="text" class="form-control" id="dirMCli" name="dirMCli" placeholder = "Dirección de la Unidad Ejecutora">
+							</div>
+							
+						</div>
+
+						<div class="form-group">
+							<label class="col-lg-2 control-label">Referencia</label>
+							<div class="col-lg-10">
+								<input type="text" class="form-control" id="refMCli" name="refMCli" placeholder = "Referencia en la Unidad Ejecutora">
+							</div>
+						</div>
+
+						<div class="form-group">
+							<label class="col-lg-2 control-label">Telefono 1</label>
+							<div class="col-lg-4">
+								<input type="text" class="form-control" id="tel1MCli" name="tel1MCli" placeholder = "Teléfono obligatorio">
+							</div>
+							<label class="col-lg-2 control-label">Telefono 2</label>
+							<div class="col-lg-4">
+								<input type="text" class="form-control" id="tel2MCli" name="tel2MCli" placeholder = "Teléfono opcional">
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="col-lg-2 control-label">Telefono 3</label>
+							<div class="col-lg-4">
+								<input type="text" class="form-control" id="tel3MCli" name="tel3MCli" placeholder = "Teléfono opcional">
+							</div>	
+												
+						</div>
+						<div class="form-group">
+				            <label class="col-lg-2 control-label">E-mail (1)</label>
+				            <div class="col-lg-10">
+				              <input type="email" class="form-control" id="emailMCli"  name="emailMCli" placeholder="Ingrese un correo válido">
+				            </div>            
+				          </div>
+
+						<div class="form-group">
+						    <div class="col-lg-offset-5 col-lg-10">
+						    	
+						      <!--<button type="submit" class="btn btn-default">Ingresar</button>-->
+						      	<button type="submit" class="btn btn-success"><span class="glyphicon glyphicon-ok"></span> Guardar</button>
+				     			<a href="{% url "list-cliente"%}" class="btn btn-danger" style="color:#fff;"><span class="glyphicon glyphicon-remove"></span> Cancelar</a>
+				     			<br><br>
+									{% if error %}
+									<p class="bg-danger">{{error}}</p>
+									{% endif %}
+						    </div>
+				  		</div>
+
+					</form>
+				</div>
+			</div>
+			<div class="panel-footer" style="background-color:#383821;">
+			    <i class="text-success text-small">Fondo Italo Peruano</i>
+			</div>
+		</div>
+	
+</div>
+<div id="lstdepartamento" name="lstdepartamento">
+										
+</div>
+<div class="col-lg-2"></div><div class="col-lg-2"></div><div class="col-lg-2"></div><div class="col-lg-2"></div><div class="col-lg-2"></div>
+{% endblock %}
+<div class="col-lg-2"></div>

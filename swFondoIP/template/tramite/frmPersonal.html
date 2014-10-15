@@ -1,0 +1,172 @@
+{% extends "base3.html"%}
+{% block js%}
+<script src="/media/js/fipValidacion.js"></script>
+ <script src="/media/js/bootstrap-collapse.js"></script>
+ 
+{% endblock %}
+{% block contenido %}
+
+<div class="container col-lg-8">
+    
+    
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <center><b>Registro de Personal</b></center>
+      </div>
+        
+      <div class="panel-body">
+        
+      <div  border="100">
+        <center>
+        <form method= "POST"  class="form-horizontal" role="form" name="frmPersonal" id ="frmPersonal">
+          {% csrf_token %}
+          <!--<div class="form-group">
+            <label class="col-lg-2 control-label">Codigo</label>
+            <div class="col-lg-4">
+              <input type="text" class="form-control" name = "idMPer" id="idMPer"
+                     placeholder="Código">
+            </div>
+          </div>-->
+
+          <div class="form-group">
+            <label class="col-lg-2 control-label">Ap. Paterno</label>
+            <div class="col-lg-10">
+              <input type="text" class="form-control" id="apePMPer"  name="apePMPer"
+                     placeholder="Ingrese apellido paterno">
+            </div>
+          </div>
+          
+          <div class="form-group">
+            <label class="col-lg-2 control-label">Ap. Materno</label>
+            <div class="col-lg-10">
+              <input type="text" class="form-control" id="apeMMPer" name="apeMMPer" 
+                     placeholder="Ingrese apellido materno">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="col-lg-2 control-label">Nombres</label>
+            <div class="col-lg-10">
+              <input type="text" class="form-control" id="nomMPer"  name="nomMPer"
+                     placeholder="Ingrese nombres">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="col-lg-2 control-label">F. Nacimiento</label>
+            <div class="col-lg-4">
+              <input type="date" class="form-control" id="fechNacMPer"  name="fechNacMPer"
+                     placeholder="Fecha de nacimiento">
+            </div>
+
+            <label class="col-lg-2 control-label">Tipo Pers.</label>
+            <div class="col-lg-4">
+              <select type="select" class="form-control" id="idTipPerMPer"  name="idTipPerMPer"
+                     placeholder="">
+                     <option value="">Seleccione</option>
+                     {% for tp in lstTipPersonal %}
+                     <option value="{{tp.id}}">{{tp.NomDTab}}</option>
+                     {% endfor %}
+              </select>
+            </div>
+
+          </div>
+          
+          <div class="form-group">
+            <label class="col-lg-2 control-label">Tipo Docum.</label>
+            <div class="col-lg-4">
+              <select type="select" class="form-control" id="idTipDocMPer" name="idTipDocMPer">
+                     <option value="">Seleccione...</option>
+                     {% for td in lstTipoDoc%}
+                     <option value="{{td.pk}}">{{td.NomDTab}}</option>
+                     
+                     {% endfor %}
+              </select>
+            </div>
+            
+            <label class="col-lg-2 control-label">Nº Documento</label>
+            <div class="col-lg-4">
+              <input type="text" class="form-control" id="nDocMPer" name="nDocMPer"
+                     placeholder="Ingrese numero de documento">
+            </div>
+
+          </div>
+
+          <div class="form-group">
+            <label class="col-lg-2 control-label">F. Ingreso</label>
+            <div class="col-lg-4">
+              <input type="date" class="form-control" id="fecIngMPer"  name="fecIngMPer">
+            </div>
+          </div>
+
+          <div class="form-group">
+
+            <label class="col-lg-2 control-label">Telef/Cel (1)</label>
+            <div class="col-lg-4">
+              <input type="text" class="form-control" id="tel1MPer"  name="tel1MPer"
+                     placeholder="Telefono / Celular">
+            </div>
+
+            <label class="col-lg-2 control-label">Telef/Cel (2)</label>
+            <div class="col-lg-4">
+              <input type="text" class="form-control" id="tel2MPer"  name="tel2MPer"
+                     placeholder="Telefono / Celular (Opcional)">
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="col-lg-2 control-label">E-mail (1)</label>
+            <div class="col-lg-10">
+              <input type="email" class="form-control" id="email1MPer"  name="email1MPer"
+                     placeholder="Ingrese un correo válido">
+            </div>            
+          </div>
+          <div class="form-group">
+            <label class="col-lg-2 control-label">E-mail (2)</label>
+            <div class="col-lg-10">
+              <input type="email" class="form-control" id="emailMPer"  name="email2MPer"
+                     placeholder="Ingrese un correo válido (opcional)">
+            </div>            
+          </div>
+          <div class="form-group">
+            <label class="col-lg-2 control-label">Departamento</label>
+            <div class="col-lg-4">
+              <select type="select" class="form-control" id="idArea" name="idArea">
+                     <option value="">Seleccione...</option>
+                     {% for a in lstAreas %}
+                     <option value="{{a.pk}}">{{a.NomDTab}}</option>
+                     {% endfor %}
+                     
+              </select>
+            </div>            
+          </div>
+
+
+
+          <div class="form-group">
+            <div class="col-lg-offset-4 col-lg-10">
+              
+              <button type="submit" class="btn btn-success"><span class="glyphicon glyphicon-ok"></span> Guardar</button>
+              <a href="{% url "vista_Personal"%}" class="btn btn-danger"><span class="glyphicon glyphicon-remove"></span> Cancelar</a>
+             
+            </div>
+          </div>
+
+              {% if error %}
+              <p class="bg-danger">{{error}}</p>
+              {% endif %}
+
+        </form>
+      </center>
+
+      </div>
+
+      </div>
+      <div class="panel-footer">
+      <i><small>Fondo Italo Peruano</small></i>
+      </div>
+    </div>
+    
+
+  </div>
+
+{% endblock contenido %}

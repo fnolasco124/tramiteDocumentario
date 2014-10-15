@@ -1,0 +1,94 @@
+
+{% extends "base3.html"%}
+{% block js%}
+<script src="/media/js/fipValidacion.js"></script>
+{% endblock %}
+{% block contenido %}
+<div class="col-lg-2">
+	
+</div>
+<div class="col-lg-10">
+<div class="container col-lg-10">
+	<div class="panel panel-default">
+		<div class="panel-heading">
+			<center><b>Registro de Usuarios</b></center>
+		</div>
+
+		<div class="panel-body">
+			<div border="100">
+				<form  method="POST" class="form-horizontal" role="form" id = "frmUsuario" name = "frmUsuario">
+					{% csrf_token %}
+					<div class="form-group">
+						<label class="col-lg-2 control-label">Personal</label>
+						<div class="col-lg-6">
+							<select id="idMPer" name="idMPer" class="form-control">
+								<option value="">Seleccione...</option>
+								{% if lista %}
+									{% for obj in lista %}
+										<option value="{{obj.pk}}">{{obj.apePMPer}} {{obj.apeMMPer}} {{obj.nomMPer}}</option>
+									{% endfor %}
+								{% endif %}
+							</select>
+						</div>
+					</div>
+					
+					<div class="form-group">
+						<label class="col-lg-2 control-label">Nombre</label>
+						<div class="col-lg-6">
+							<input type="text" class="form-control" id="logMUsu" name="logMUsu">
+						</div>
+					</div>
+
+					<div class="form-group">
+						<label class="col-lg-2 control-label">Contraseña</label>
+						<div class="col-lg-4">
+							<input type="password" class="form-control" id="claMUsu" name="claMUsu">
+						</div>
+						<label class="col-lg-2 control-label">Contraseña</label>
+						<div class="col-lg-4">
+							<input type="password" class="form-control" id="claMUsu2" name="claMUsu2">
+						</div>
+					</div>
+
+					<div class="form-group">
+						<label class="col-lg-2 control-label">Permisos</label>
+						<div class="col-lg-4">
+							<select id="permMUsu" name="permMUsu" class="form-control">
+								<option value="">Seleccione..</option>
+								<option value="1" >Lectura</option>
+								<option value="2">Escritura</option>
+								<option value="3">Total</option>
+							</select>
+						</div>
+						
+						
+					</div>
+					
+					<div class="form-group">
+			            <div class="col-lg-offset-4 col-lg-10">
+			              	
+			        	    <button type="submit" class="btn btn-success"><span class="glyphicon glyphicon-ok"></span> Guardar</button>
+				     		<button type="reset" class="btn btn-danger"><span class="glyphicon glyphicon-remove"></span> Cancelar</button>	
+			              	
+			            </div>
+			            <br><br>
+							{% if error %}
+							<p class="bg-danger">{{error}}</p>
+							{% endif %}
+			        </div>
+
+				</form>
+			</div>
+			
+		</div>
+		<div class="panel-footer">
+			<i><small>Fondo Italo Peruano</small></i>
+			
+				<i><small>{{error}}</small></i>
+			
+		</div>
+	</div>	
+</div>
+</div>
+
+{% endblock %}

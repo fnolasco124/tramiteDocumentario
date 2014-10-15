@@ -1,0 +1,11 @@
+http://yoonchee.hasdocs.com/django/topics/class-based-views/generic-display.html
+http://effectivedjango.com/tutorial/forms.html
+http://kevindias.com/writing/django-class-based-views-multiple-inline-formsets/
+http://chriskief.com/2014/04/22/populate-and-validate-a-django-modelform-using-api-data-with-the-generic-createview/
+https://docs.djangoproject.com/en/dev/topics/class-based-views/generic-editing/
+http://stackoverflow.com/questions/6181041/updating-user-model-in-django-with-class-based-updateview
+http://chernando.eu/python/django-clases-genericas/
+
+http://ccbv.co.uk/projects/Django/1.6/django.views.generic.edit/CreateView/
+
+http://pydoc.net/Python/Django/1.4/django.db.backends/

@@ -1,0 +1,215 @@
+<div class="modal fade" id="seleccionarDestino" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="false">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true" id = 'false'>&times;</button>
+        <h4 class="modal-title" id="myModalLabel">Seleccione usuario(s) a derivar</h4>
+      </div>
+      
+      <div class="modal-body">
+        <div style="height:350px;width:550px; overflow:scroll;">
+              
+              <div class="panel-group" id="accordion">
+                    {% if g_doc_tecnicos %}
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <h4 class="panel-title">
+                                <input class="select" type="checkbox" id="chkDocTec" name="chkDocTec"/>
+                                <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne"> Grupo documentos técnicos</a>
+                            </h4>
+                        </div>
+                        <div id="collapseOne" class="panel-collapse collapse">
+                            <div class="panel-body">
+                                <table class="table">
+                                    <tbody>
+                                    
+                                    {% for obj in g_doc_tecnicos %}
+									<tr>
+                                      <td>
+                                          <input class="select docTec" type="checkbox" id="destino[]" name="destino[]" cod="{{obj.NomDTab}}" nom="{{obj.NomDTab}}">{{obj.NomDTab}}</input>    
+                                      </td>
+                                    </tr>
+                                    {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+                    {% if g_alegal %}
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <h4 class="panel-title">
+                                <input class="select" type="checkbox" id="chkALegal" name="chkALegal"/>
+                                <a data-toggle="collapse" data-parent="#accordion" href="#collapseLegal"> Grupo area legal</a>
+                            </h4>
+                        </div>
+                        <div id="collapseLegal" class="panel-collapse collapse">
+                            <div class="panel-body">
+                                <table class="table">
+                                    <tbody>
+                                    
+                                    {% for obj in g_alegal %}
+									<tr>
+                                      <td>
+                                          <input class="select aLegal" type="checkbox" id="destino[]" name="destino[]" cod="{{obj.NomDTab}}" nom="{{obj.NomDTab}}">{{obj.NomDTab}}</input>    
+                                      </td>
+                                    </tr>
+                                    {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+                    {% if g_doc_admin %}
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <h4 class="panel-title">
+                                <input class="select" type="checkbox" id="chkDocAdmin" name="chkDocAdmin"/>
+                                <a data-toggle="collapse" data-parent="#accordion" href="#collapseTwo"> Flujo derivacion</a>
+                            </h4>
+                        </div>
+                        <div id="collapseTwo" class="panel-collapse collapse">
+                            <div class="panel-body">
+                                <table class="table">
+                                    <tbody>
+                                    {% for obj in g_doc_admin %}
+                                    <tr>
+                                      <td>
+                                          <input class="select docAdmin" type="checkbox" id="destino[]" name="destino[]" cod="{{obj.NomDTab}}" nom="{{obj.NomDTab}}"> {{obj.NomDTab}}</input> 
+                                      </td>
+                                      
+                                    </tr>
+                                    {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+                    {% if g_area_tecnica %}
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <h4 class="panel-title">
+                                <input class="select" type="checkbox" id="chkATecnica" name="chkATecnica"/>
+                                <a data-toggle="collapse" data-parent="#accordion" href="#collapseThree"> Grupo área técnica</a>
+                            </h4>
+                        </div>
+                        <div id="collapseThree" class="panel-collapse collapse">
+                            <div class="panel-body">
+                                <table class="table">
+                                    <tbody>
+                                    
+                                    {% for obj in g_area_tecnica %}
+									<tr>
+                                      <td>
+                                          <input class="select aTecnica" type="checkbox" id="destino[]" name="destino[]" cod="{{obj.NomDTab}}" nom="{{obj.NomDTab}}">{{obj.NomDTab}}</input>    
+                                      </td>
+                                    </tr>
+                                    {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+                    {% if g_area_financiera %}
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <h4 class="panel-title">
+                                <input class="select" type="checkbox" id="chkAFinanciera" name="chkAFinanciera"/>
+                                <a data-toggle="collapse" data-parent="#accordion" href="#collapseFour"> Grupo área financiera</a>
+                            </h4>
+                        </div>
+                        <div id="collapseFour" class="panel-collapse collapse">
+                            <div class="panel-body">
+                                <table class="table">
+                                    <tbody>
+                                    
+                                    {% for obj in g_area_financiera %}
+									<tr>
+                                      <td>
+                                          <input class="select aFinanciera" type="checkbox" id="destino[]" name="destino[]" cod="{{obj.NomDTab}}" nom="{{obj.NomDTab}}">{{obj.NomDTab}}</input>    
+                                      </td>
+                                    </tr>
+                                    {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+                    {% if g_tesoreria %}
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <h4 class="panel-title">
+                                <input class="select" type="checkbox" id="chkATesoreria" name="chkATesoreria"/>
+                                <a data-toggle="collapse" data-parent="#accordion" href="#collapseFive"> Grupo tesorería</a>
+                            </h4>
+                        </div>
+                        <div id="collapseFive" class="panel-collapse collapse">
+                            <div class="panel-body">
+                                <table class="table">
+                                    <tbody>
+                                    
+                                    {% for obj in g_tesoreria %}
+									<tr>
+                                      <td>
+                                          <input class="select aTesoreria" type="checkbox" id="destino[]" name="destino[]" cod="{{obj.NomDTab}}" nom="{{obj.NomDTab}}">{{obj.NomDTab}}</input>    
+                                      </td>
+                                    </tr>
+                                    {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+                    {% if g_usuarios %}
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <h4 class="panel-title">
+                                <input class="select" type="checkbox" id="chkAUsuarios" name="chkAUsuarios"/>
+                                <a data-toggle="collapse" data-parent="#accordion" href="#collapseSix"> Todos los usuarios</a>
+                            </h4>
+                        </div>
+                        <div id="collapseSix" class="panel-collapse collapse">
+                            <div class="panel-body">
+                                <table class="table">
+                                    <tbody>
+                                    
+                                    {% for obj in g_usuarios %}
+									<tr>
+                                      <td>
+                                          <input class="select aUsuarios" type="checkbox" id="destino[]" name="destino[]" cod="{{obj.NomDTab}}" nom="{{obj.NomDTab}}">{{obj.NomDTab}}</input>    
+                                      </td>
+                                    </tr>
+                                    {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+                    <div class="panel panel-default">
+                        <div class="panel-heading" style="background: #d9534f; color:#fff;">
+                            <h4 class="panel-title">
+                                <input class="select" type="checkbox" id="destino[]" name="destino[]" cod="CIERRE" nom="CIERRE"/>
+                                <a data-toggle="collapse" data-parent="#accordion" href="#" style="color:#fff;"> Finalizar Protocolo</a>
+                            </h4>
+                        </div>
+                        
+                    </div>
+                                      
+              </div>
+              <br>                     
+      </div>
+       <a href="#" class="destino btn btn-danger" id="btnFinalizarDestino" style="float:right;"><span class="glyphicon glyphicon-ok" ></span> Cerrar</a>    
+    </div>
+    </div>
+  </div>
+</div>
+
+

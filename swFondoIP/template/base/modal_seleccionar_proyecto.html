@@ -1,0 +1,46 @@
+<div class="modal fade" id="seleccionarConvenio" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true" id = 'false'>&times;</button>
+        <h4 class="modal-title" id="myModalLabel">Seleccionar Convenios</h4>
+      </div>
+      <div class="modal-body" id = "seleccionarProyectoProtocolo" name = "seleccionarProyectoProtocolo">
+        <div class="form-group col-lg-8 pull-right">
+          <input type="text" class="form-control  pull-rigth text-filter"placeholder = "[Ingrese datos a buscar]" nombreTabla = "tabla_proyectos">
+        </div>
+        
+          <div style="height:400px;width:100%; overflow:scroll;">
+            <table class="table" id="tabla_proyectos" name="tabla_proyectos" style="border:1px solid #220; width:1470px;"  align="center">
+              <thead style="background-color: #222; color: #FAFAFA;">
+                <tr id="cabecera"> 
+                    <th style="width:10%;"><center>Codigo</center></th>
+                    <th style="width:70%;"><center>Convenio</center></th>
+                    <th style="width:20%;"><center>Unidad Ejecutora</center></th>                  
+                </tr>
+              </thead>
+              
+              <tbody>    
+               
+              {% for item in  lista_proyecto %}
+              
+                <tr id="tr{{item.pk}}">
+                  <td><a href="#">{{item.IdCFMProy}}</a></td>
+                  <td><a href="#" class="proyecto-protocolo" nom-proy="{{item.NomMProy}}" cod-proy="{{item.IdMProy}}" cliente="{{item.IdMCli.NomMCli}}" title="{{item.NomMProy}}">{{item.NomMProy}}</a></td>            
+                  <td title="{{item.IdMCli.NomMCli}}">{{item.IdMCli.NomMCli|truncatechars:40}}</td>
+                  
+                </tr>
+              
+              {% endfor %}
+
+              </tbody>
+              
+            </table>  
+          </div>
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
